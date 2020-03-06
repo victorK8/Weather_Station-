@@ -9,7 +9,7 @@ LogFilename = 'RaspiWeatherStation_Log_' + str(time.time()) + '.csv'
 Header = 'Temperature, Humidity, Timestamp, Date'
 
 # Create first log file and write header
-LogFile = open(LogFilename,'w')
+LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'w')
 LogFile.write(Header)
 LogFile.close()
 
@@ -55,7 +55,7 @@ while True:
 
                 # Write data into current log_file
                 LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'a')
-                LogFile.write(decoded_message)
+                LogFile.write(LogMessage)
                 LogFile.close()
                 
 
