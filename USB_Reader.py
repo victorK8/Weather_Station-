@@ -6,7 +6,7 @@ import time
 # File's Handling variables
 Path_To_Storage_LogFiles = '/home/pi/Desktop/Log_Files'
 LogFilename = 'RaspiWeatherStation_Log_' + str(time.time()) + '.csv'
-Header = 'Temperature, Humidity, Timestamp, Date'
+Header = 'Temperature, Humidity, Timestamp, Date \n'
 
 # Create first log file and write header
 LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'w')
