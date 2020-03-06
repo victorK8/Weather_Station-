@@ -5,6 +5,6 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Serial.write(" Hi Raspi. I'm Arduino Board ");
+  Serial.write(" Hi Raspi. I'm Arduino Board \n");
   delay(500);
 }
