@@ -36,7 +36,7 @@ while True:
 
 
         # any message?
-        ThereIsMessage = bus.in_wating > 0
+        ThereIsMessage = bus.in_waiting > 0
 
         if ThereIsMessage:
 
