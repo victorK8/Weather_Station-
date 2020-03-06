@@ -41,7 +41,7 @@ while True:
         if ThereIsMessage:
 
                 # Get time as timestamp and date form
-                time = time.time()
+                current_time = time.time()
                 date = time.ctime()
                         
                 # Get bus message 
@@ -51,7 +51,7 @@ while True:
                 decoded_message = message.decode('utf8')
 
                 # Log message
-                LogMessage = decoded_message + ', ' + str(time) + ', ' + date
+                LogMessage = decoded_message + ', ' + str(current_time) + ', ' + date
 
                 # Write data into current log_file
                 LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'a')
