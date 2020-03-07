@@ -50,8 +50,8 @@ while True:
                 # Decode message
                 decoded_message = message.decode('utf8')
 
-                # Log message
-                LogMessage = decoded_message + ', ' + str(current_time) + ', ' + date
+                # Log message  ==>> decoded_message.rstrip() that functio quit \n
+                LogMessage = decoded_message.rstrip() + ', ' + str(current_time) + ', ' + date + '\n'
 
                 # Write data into current log_file
                 LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'a')
