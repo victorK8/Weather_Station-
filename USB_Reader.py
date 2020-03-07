@@ -57,17 +57,20 @@ while True:
 
 
                 # convert json to dict object
-                msgAsDict = json.loads(decoded_message)
+                try:
+                        msgAsDict = json.loads(decoded_message)
 
-                # Log message  ==>> decoded_message.rstrip() that functio quit \n
-                LogMessage = str(msgAsDict['Temperature']) + ', ' + str(msgAsDict['Humidity']) + ', ' + str(current_time) + ', ' + date + '\n'
-                print(LogMessage)
+                        # Log message  ==>> decoded_message.rstrip() that functio quit \n
+                        LogMessage = str(msgAsDict['Temperature']) + ', ' + str(msgAsDict['Humidity']) + ', ' + str(current_time) + ', ' + date + '\n'
+                        print(LogMessage)
 
-                # Write data into current log_file
-                LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'a')
-                LogFile.write(LogMessage)
-                LogFile.close()
-                
+                        # Write data into current log_file
+                        LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'a')
+                        LogFile.write(LogMessage)
+                        LogFile.close()
+                except:
+                        # Clean port
+                        bus.flush()
 
 
 
