@@ -1,4 +1,4 @@
-from flask import Flask,render_template
+from flask import Flask, render_template, url_for
 
 app = Flask(__name__)
 
@@ -6,19 +6,19 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html')
-    
+
 # Dashboard page
 @app.route('/Dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    return 'Dashboard (Not yet)'
 
 # Download page
 @app.route('/Downloads')
 def downloads():
-    return render_template('downloads.html')
+    return 'Downloads (Not yet)'
 
 # About page
-@app.route('/About')
+@app.route('/about.html')
 def about():
     return render_template('about.html')
 

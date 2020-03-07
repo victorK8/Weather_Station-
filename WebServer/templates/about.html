@@ -4,20 +4,20 @@
 
 <head>
   <!-- Title of web -->
-  <title> Weather Station </title>
+  <title> -> About </title>
 
   <!-- CSS script to set style -->
   <style>
 
     #BackgroundStyle{
-        background-image: url(pics/background_pic.jpg);
+        background-image: url({{ url_for('static', filename='background_pic.jpg') }});
         background-size: 1600px 800px;
     }
     #TextStyle {
         position: relative;
         text-align: center;
-        text-transform: uppercase;
-        font-size: 50px;
+        text-transform: lowercase;
+        font-size: 30px;
         margin-top: 80px;
         color: black;
     }
@@ -62,13 +62,12 @@
 
 <body id = "BackgroundStyle">
     <!-- Text -->
-    <p id = TextStyle> Víctor Malumbres Talles </p>
-
+    <p1> Contact Info (In progress). </p1>
 
     <!-- Index Menu -->
     <!-- Note: We use href="#" for test links. In a real web site this would be URLs. -->
     <ul>
-            <li><a href="index.html">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li><a href="/Dashboard">Dashboard</a></li>
             <li><a href="/Downloads">Downloads</a></li>
             <li><a href="about.html">About</a></li>
