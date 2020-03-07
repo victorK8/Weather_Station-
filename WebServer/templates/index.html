@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+  <!-- Title of web -->
+  <title> Weather Station </title>
+
+  <!-- CSS script to set style -->
+  <style>
+
+    #BackgroundStyle{
+        background-image: url(pics/background_pic.jpg);
+        background-size: 1600px 800px;
+    }
+    #TextStyle {
+        position: relative;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 80px;
+        margin-top: 80px;
+        color: black;
+    }
+    body {margin:0;}
+
+    ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    }
+
+    li {
+    float: left;
+    }
+
+    li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    }
+
+    li a:hover:not(.active) {
+    background-color: #111;
+    }
+
+    .active {
+    background-color: #4CAF50;
+    }
+
+  </style>
+
+</head>
+
+
+
+<body id = "BackgroundStyle">
+    <!-- Text -->
+    <h1 id = TextStyle> Weather Station </h1>
+
+
+    <!-- Index Menu -->
+    <!-- Note: We use href="#" for test links. In a real web site this would be URLs. -->
+    <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#news">Dashboard</a></li>
+            <li><a href="#contact">Downloads</a></li>
+            <li><a href="#about">About</a></li>
+    </ul>
+              
+</body>
+
+</html>
