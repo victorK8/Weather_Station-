@@ -4,6 +4,7 @@ import serial
 import time
 import json
 
+
 # File's Handling variables
 Path_To_Storage_LogFiles = '/home/pi/Desktop/Log_Files'
 LogFilename = 'RaspiWeatherStation_Log_' + str(time.time()) + '.csv'
@@ -45,14 +46,18 @@ while True:
                 current_time = time.time()
                 date = time.ctime()
                         
-                # Get bus message 
-                message = bus.readline()
+                # Get raw message 
+                raw_message = bus.readline()
 
-                # Decode message
-                decoded_message = message.decode('utf8')
+                # Decode message (Quit 'b' char and '\n')
+                decoded_message = raw_message.decode('utf8')
+                decoded_message = decoded_message.rstrip()
+
+                # convert json to dict object
+                msgAsDict = json.loads(decoded_message)
 
                 # Log message  ==>> decoded_message.rstrip() that functio quit \n
-                LogMessage = decoded_message.rstrip() + ', ' + str(current_time) + ', ' + date + '\n'
+                LogMessage = str(msgAsDict['Temperature']) + ', ' + str(msgAsDict['Humidity']) + ', ' + str(current_time) + ', ' + date 
 
                 # Write data into current log_file
                 LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'a')
