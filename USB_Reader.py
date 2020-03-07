@@ -48,16 +48,20 @@ while True:
                         
                 # Get raw message 
                 raw_message = bus.readline()
+                print(raw_message)
 
                 # Decode message (Quit 'b' char and '\n')
                 decoded_message = raw_message.decode('utf8')
                 decoded_message = decoded_message.rstrip()
+                print(decoded_message)
+
 
                 # convert json to dict object
                 msgAsDict = json.loads(decoded_message)
 
                 # Log message  ==>> decoded_message.rstrip() that functio quit \n
                 LogMessage = str(msgAsDict['Temperature']) + ', ' + str(msgAsDict['Humidity']) + ', ' + str(current_time) + ', ' + date 
+                print(LogMessage)
 
                 # Write data into current log_file
                 LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'a')
