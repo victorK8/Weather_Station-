@@ -60,7 +60,7 @@ while True:
                 try:
                         msgAsDict = json.loads(decoded_message)
 
-                        # Log message  ==>> decoded_message.rstrip() that functio quit \n
+                        # Log message (as csv format)
                         LogMessage = str(msgAsDict['Temperature']) + ', ' + str(msgAsDict['Humidity']) + ', ' + str(current_time) + ', ' + date + '\n'
                         print(LogMessage)
 
