@@ -8,7 +8,7 @@ import sys
 app = Flask(__name__)
 
 # Data path (Change to 'home/pi/Desktop/LogFiles')
-DataPath = os.getcwd()
+DataPath = r'C:\Users\Victor\Documents\GitHub\Weather_Station-\WebServer'
 
 
 # -------------------- Functions for principal HTML pages ----------------- #
@@ -42,13 +42,14 @@ def UploaData(filename):
     # Open File
     FileObject = open(os.path.join(DataPath,filename),'r')
 
+    print(os.path.join(DataPath,filename))
+
     # Read it
     FileAsText = FileObject.read()
 
     return FileAsText
 
 
-# Run server
 if __name__ == '__main__':
     app.run(host = '0.0.0.0', port=80, debug=True)
 
