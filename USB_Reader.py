@@ -3,6 +3,35 @@ import sys
 import serial
 import time
 import json
+import socket
+
+# Function to send string to web server by using GET Request
+def SendDataToWebServer(MessageAsString):
+
+        # Server data
+        IP = 'localhost'
+        PORT = '80'
+
+        # Get request as string
+        RequestAsString = 'GET /CurrentData/' + MessageAsString + ' HTTP/1.1\r\nHost: ' + IP + ':' + PORT + '\r\n\r\n'
+        
+        try:
+                # Open TCP/IP Socket        
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                 
+
+                # Connect to Web Server
+                s.connect((IP,80))
+
+                # Send Request 
+                s.sendall(RequestAsString.encode())
+
+                # Close Socket
+                s.close
+        except:
+                print('Error sending current measure')
+
+
+
 
 
 # File's Handling variables
@@ -55,12 +84,24 @@ while True:
                 decoded_message = decoded_message.rstrip()
                 print(decoded_message)
 
-
-                # convert json to dict object
                 try:
+                        # convert json to dict object. 
                         msgAsDict = json.loads(decoded_message)
 
-                        # Log message (as csv format)
+                        # Create json object with time 
+                        TimeDict = {"Timestamp" : current_time, "Date" : date}
+
+                        # Append to TimeDict, Arduino Current Measure 
+                        MsgToWebServer = json.loads(TimeDict)
+                        MsgToWebServer.update(msgAsDict)
+
+                        # Json Object dumps to string type
+                        MsgToWebServerAsString = json.dumps(MsgToWebServer)
+
+                        # Send data to web sever
+                        SendDataToWebServer(MsgToWebServerAsString)
+
+                        # Append data to log files (as csv format)
                         LogMessage = str(msgAsDict['Temperature']) + ', ' + str(msgAsDict['Humidity']) + ', ' + str(current_time) + ', ' + date + '\n'
                         print(LogMessage)
 
