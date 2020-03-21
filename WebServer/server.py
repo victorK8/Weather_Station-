@@ -6,6 +6,10 @@ import json
 import os
 import sys
 
+# const
+GoogleAPIKey = 'AIzaSyChnxLzQNUy52aO4hcj387y6aa895nWB3E'
+
+
 # Global Variables
 CurrentDataAsString = '{"Timestamp":2,"Date":"21/03/2020","Temperature": 30, "Humidity": 55}'
 
@@ -14,7 +18,7 @@ app = Flask(__name__)
 # Data path (Change to 'home/pi/Desktop/LogFiles')
 DataPath = r'C:\Users\Victor\Documents\GitHub\Weather_Station-\WebServer'
 
-# -------------------- Functions for  HTML pages ----------------- #
+# -------------------- WEB BACKEND ----------------- #
 
 # Index page
 @app.route('/')
@@ -56,22 +60,52 @@ def downloads():
 def about():
     return render_template('about.html')
 
-# --------------------- Functions for another utilities  -------------------------- # 
+# Location page
+@app.route('/location.html')
+def location():
+    return render_template('location.html')
 
-# Upload current data as json format
+
+# --------------------- API -------------------------- # 
+
+
+# Url for get current measure
+@app.route('/Data/<measure>')
+def GetCurrentData(measure):
+    ReturnedString = ''
+
+    # As json object
+    CurrentDataAsJson = json.load(CurrentDataAsString)
+
+    if measure == 'Temperature':
+        ReturnedString = str(CurrentDataAsJson['Temperature'])
+    elif measure == 'Humidity':
+        ReturnedString = str(CurrentDataAsJson['Humidity'])
+    else:
+        ReturnedString = '' 
+
+    return ReturnedString
+
+
+
+
+# ---------------------  Other utilities   -------------------------- #
+
+
+# Url for upload current data as json by IoT device
 @app.route('/CurrentData/<JsonObject>')
 def UploadCurrentData(JsonObject):
 
     global CurrentDataAsString 
 
     # Upload Current Data Variable   
-    CurrentDataAsString = JsonObject.decode('utf8')
+    CurrentDataAsString = JsonObject
 
     return 'ok' 
 
 
-# Put in browser as string a local file
-@app.route('/Data/<filename>')
+# Url for download a log file by name
+@app.route('/DownloadLogFile/<filename>')
 def UploadFileToBrowser(filename):
 
     # Open File
@@ -85,6 +119,7 @@ def UploadFileToBrowser(filename):
     return FileAsText
 
 
+# Run tha server
 if __name__ == '__main__':
     app.run(host = '0.0.0.0', port=80, debug=True)
 
