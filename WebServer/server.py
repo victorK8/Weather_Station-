@@ -5,13 +5,15 @@ from flask import Flask, render_template, url_for
 import os
 import sys
 
+# Global Variables
+CurrentDataAsString = ''
+
 app = Flask(__name__)
 
 # Data path (Change to 'home/pi/Desktop/LogFiles')
 DataPath = r'C:\Users\Victor\Documents\GitHub\Weather_Station-\WebServer'
 
-
-# -------------------- Functions for principal HTML pages ----------------- #
+# -------------------- Functions for  HTML pages ----------------- #
 
 # Index page
 @app.route('/')
@@ -35,9 +37,21 @@ def about():
 
 # --------------------- Functions for another utilities  -------------------------- # 
 
+# Upload current data as json format
+@app.route('/CurrentData/<JsonObject>')
+def UploadCurrentData(JsonObject):
+
+    global CurrentDataAsString 
+
+    # Upload Current Data Variable   
+    CurrentDataAsString = JsonObject
+
+    return JsonObject 
+
+
 # Put in browser as string a local file
 @app.route('/Data/<filename>')
-def UploaData(filename):
+def UploadFileToBrowser(filename):
 
     # Open File
     FileObject = open(os.path.join(DataPath,filename),'r')
