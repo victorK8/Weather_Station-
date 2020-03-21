@@ -2,11 +2,12 @@
 
 from flask import Flask, render_template, url_for
 
+import json
 import os
 import sys
 
 # Global Variables
-CurrentDataAsString = ''
+CurrentDataAsString = '{"Timestamp":2,"Date":"21/03/2020","Temperature": 30, "Humidity": 55}'
 
 app = Flask(__name__)
 
@@ -18,7 +19,27 @@ DataPath = r'C:\Users\Victor\Documents\GitHub\Weather_Station-\WebServer'
 # Index page
 @app.route('/')
 def index():
-    return render_template('index.html')
+
+    # Get current measure
+    global CurrentDataAsString
+
+    try:
+
+        # Convert to json
+        CurrentDataAsJsonObject = json.loads(CurrentDataAsString)
+
+        # Prepare string to show in web html
+        DateString = CurrentDataAsJsonObject[Date]
+        TemperatureString = 'Temperature : ' + str(CurrentDataAsJsonObject[Temperature]) + ' [ºC]'
+        HumidityString = 'Humidity : ' + str(CurrentDataAsJsonObject[Humidity]) + ' [%]'
+
+    except:
+        DateString = '-- / -- / --'
+        TemperatureString = 'Temperature : -- [ºC]'
+        HumidityString = 'Humidity : -- [%]' 
+
+
+    return render_template('index.html', date = DateString, temperature = TemperatureString, humidity = HumidityString)
 
 # Dashboard page
 @app.route('/dashboard.html')
