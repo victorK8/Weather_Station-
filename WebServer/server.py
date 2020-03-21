@@ -65,9 +65,9 @@ def UploadCurrentData(JsonObject):
     global CurrentDataAsString 
 
     # Upload Current Data Variable   
-    CurrentDataAsString = JsonObject
+    CurrentDataAsString = JsonObject.decode('utf8')
 
-    return JsonObject 
+    return 'ok' 
 
 
 # Put in browser as string a local file
