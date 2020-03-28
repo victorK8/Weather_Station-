@@ -85,21 +85,11 @@ while True:
                         # convert json to dict object. 
                         msgAsDict = json.loads(decoded_message)
 
-                        # Create json object with time 
-                        TimeDict = {"Timestamp" : current_time, "Date" : date}
-
-                        # Append to TimeDict, Arduino Current Measure 
-                        MsgToWebServer = json.loads(TimeDict)
-                        MsgToWebServer.update(msgAsDict)
-
-                        # Json Object dumps to string type
-                        MsgToWebServerAsString = json.dumps(MsgToWebServer)
-
-                        # Send data to web sever
-                        SendDataToWebServer(MsgToWebServerAsString)
-
                         # Append data to log files (as csv format)
                         LogMessage = str(msgAsDict['Temperature']) + ', ' + str(msgAsDict['Humidity']) + ', ' + str(current_time) + ', ' + date + '\n'
+
+                        # Send data to web sever
+                        SendDataToWebServer(LogMessage)
                         print(LogMessage)
 
                         # Write data into current log_file
