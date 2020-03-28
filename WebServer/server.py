@@ -2,26 +2,37 @@
 
 from flask import Flask, render_template, url_for
 
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+
 import json
 import os
 import sys
 
-# const
-GoogleAPIKey = 'AIzaSyChnxLzQNUy52aO4hcj387y6aa895nWB3E'
 
+#### Global Variables ####
 
-# Global Variables
+# Current data 
 CurrentDataAsString = '{"Timestamp":2,"Date":"21/03/2020","Temperature": 30, "Humidity": 55}'
-
-app = Flask(__name__)
 
 # Data path (Change to 'home/pi/Desktop/LogFiles')
 DataPath = r'C:\Users\Victor\Documents\GitHub\Weather_Station-\WebServer'
 
+# Web server with Flask
+WebServer = Flask(__name__)
+
+# Dashboard Dash App
+DashboardApp = dash.Dash(__name__, server=WebServer, routes_pathname_prefix='/Dashbord')
+
+# Location Dash App
+LocationApp = dash.Dash(__name__, server=WebServer, routes_pathname_prefix='/Dashbord')
+
+
 # -------------------- WEB BACKEND ----------------- #
 
 # Index page
-@app.route('/')
+@WebServer.route('/')
 def index():
 
     # Get current measure
@@ -45,32 +56,22 @@ def index():
 
     return render_template('index.html', date = DateString, temperature = TemperatureString, humidity = HumidityString)
 
-# Dashboard page
-@app.route('/dashboard.html')
-def dashboard():
-    return render_template('dashboard.html')
-
 # Download page
-@app.route('/Downloads')
+@WebServer.route('/Downloads')
 def downloads():
     return 'Downloads (Not yet)'
 
 # About page
-@app.route('/about.html')
+@WebServer.route('/about.html')
 def about():
     return render_template('about.html')
-
-# Location page
-@app.route('/location.html')
-def location():
-    return render_template('location.html')
 
 
 # --------------------- API -------------------------- # 
 
 
 # Url for get current measure
-@app.route('/Data/<measure>')
+@WebServer.route('/Data/<measure>')
 def GetCurrentData(measure):
     ReturnedString = ''
 
@@ -93,7 +94,7 @@ def GetCurrentData(measure):
 
 
 # Url for upload current data as json by IoT device
-@app.route('/CurrentData/<JsonObject>')
+@WebServer.route('/CurrentData/<JsonObject>')
 def UploadCurrentData(JsonObject):
 
     global CurrentDataAsString 
@@ -105,7 +106,7 @@ def UploadCurrentData(JsonObject):
 
 
 # Url for download a log file by name
-@app.route('/DownloadLogFile/<filename>')
+@WebServer.route('/DownloadLogFile/<filename>')
 def UploadFileToBrowser(filename):
 
     # Open File
@@ -121,6 +122,6 @@ def UploadFileToBrowser(filename):
 
 # Run tha server
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', port=80, debug=True)
+    WebServer.run(host = '0.0.0.0', port=80, debug=True)
 
 

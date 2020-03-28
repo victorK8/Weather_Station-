@@ -31,9 +31,6 @@ def SendDataToWebServer(MessageAsString):
                 print('Error sending current measure')
 
 
-
-
-
 # File's Handling variables
 Path_To_Storage_LogFiles = '/home/pi/Desktop/Log_Files'
 LogFilename = 'RaspiWeatherStation_Log_' + str(time.time()) + '.csv'
