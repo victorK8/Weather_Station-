@@ -1,6 +1,7 @@
 import os
 import sys
 import serial
+import datetime
 import time
 import json
 import socket
@@ -34,7 +35,7 @@ def SendDataToWebServer(MessageAsString):
 # File's Handling variables
 Path_To_Storage_LogFiles = '/home/pi/Desktop/Log_Files'
 LogFilename = 'RaspiWeatherStation_Log_' + str(time.time()) + '.csv'
-Header = 'Temperature, Humidity, Timestamp, Date \n'
+Header = 'Temperature,Humidity,Timestamp,Date \n'
 
 # Create first log file and write header
 LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'w')
@@ -85,11 +86,11 @@ while True:
                         # convert json to dict object. 
                         msgAsDict = json.loads(decoded_message)
 
-                        # Append data to log files (as csv format)
-                        LogMessage = str(msgAsDict['Temperature']) + ', ' + str(msgAsDict['Humidity']) + ', ' + str(current_time) + ', ' + date + '\n'
+                        # Send data to web sever (temperature, humidity, timestamp)
+                        SendDataToWebServer(str(msgAsDict['Temperature']) + ',' + str(msgAsDict['Humidity']) + ',' + str(current_time))
 
-                        # Send data to web sever
-                        SendDataToWebServer(LogMessage)
+                        # Append data to log files (as csv format)
+                        LogMessage = str(msgAsDict['Temperature']) + ',' + str(msgAsDict['Humidity']) + ',' + str(current_time) + ',' + date + '\n'
                         print(LogMessage)
 
                         # Write data into current log_file
