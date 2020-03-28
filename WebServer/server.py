@@ -9,12 +9,13 @@ import dash_html_components as html
 import json
 import os
 import sys
+import datetime
 
 
 #### Global Variables ####
 
 # Current data 
-CurrentDataAsString = '{"Timestamp":2,"Date":"21/03/2020","Temperature": 30, "Humidity": 55}'
+CurrentData = {"Timestamp":2,"Date":"21/03/2020","Temperature": 30, "Humidity": 55}
 
 # Data path (Change to 'home/pi/Desktop/LogFiles')
 DataPath = r'C:\Users\Victor\Documents\GitHub\Weather_Station-\WebServer'
@@ -22,11 +23,59 @@ DataPath = r'C:\Users\Victor\Documents\GitHub\Weather_Station-\WebServer'
 # Web server with Flask
 WebServer = Flask(__name__)
 
-# Dashboard Dash App
-DashboardApp = dash.Dash(__name__, server=WebServer, routes_pathname_prefix='/Dashbord')
+##### Dashboard Dash App & Layout #####
+DashboardApp = dash.Dash(__name__, server=WebServer, routes_pathname_prefix='/Dashboard/')
 
-# Location Dash App
-LocationApp = dash.Dash(__name__, server=WebServer, routes_pathname_prefix='/Dashbord')
+# Change page title
+DashboardApp.title = " Weather Station "
+
+# Current week data as json
+CurrentWeekData = {'data':[
+    {'x':[0,1,2,3,4,5,6],'y':[23,23,23,23.5,24,24],'type':'line','name':'Temp. [ºC]'},
+    {'x':[0,1,2,3,4,5,6],'y':[46,46,46,46,46,46.5,47],'type':'line','name':'Hum. [%]'}]
+    ,'layout':{'title': ' DataViz'}}
+
+#Layout
+DashboardApp.layout = html.Div(children=[
+    #Tabs
+    dcc.Tabs(
+        id = 'tabs',
+        children = [
+
+            # Tab for week's data
+            dcc.Tab(id='tab-1', label='DATAVIZ', children=[
+                # Chart 
+                dcc.Graph(
+                    id = "DatavizChart",
+                    figure = CurrentWeekData
+                )
+            ]),
+
+            # Tab for hystorical data
+            dcc.Tab(id='tab-2', label='HISTORICAL', children=[
+                dcc.Graph(id="HistoChart")
+            ]),
+
+            # Tab for statistics
+            dcc.Tab(id='tab-3', label='STATISTICS', children=[
+                dcc.Graph(id="StatChart")
+            ]),
+
+    ], className = 'row')
+
+], className = 'row')
+
+##### Location Dash App #####
+LocationApp = dash.Dash(__name__, server=WebServer, routes_pathname_prefix='/Location/')
+
+# Change page title
+LocationApp.title = " Weather Station "
+
+# Layout
+LocationApp.layout = html.Div(children=[
+    html.H1("Location")
+], className = 'row')
+
 
 
 # -------------------- WEB BACKEND ----------------- #
@@ -36,17 +85,13 @@ LocationApp = dash.Dash(__name__, server=WebServer, routes_pathname_prefix='/Das
 def index():
 
     # Get current measure
-    global CurrentDataAsString
+    global CurrentData
 
     try:
-
-        # Convert to json
-        CurrentDataAsJsonObject = json.loads(CurrentDataAsString)
-
         # Prepare string to show in web html
-        DateString = CurrentDataAsJsonObject[Date]
-        TemperatureString = 'Temperature : ' + str(CurrentDataAsJsonObject[Temperature]) + ' [ºC]'
-        HumidityString = 'Humidity : ' + str(CurrentDataAsJsonObject[Humidity]) + ' [%]'
+        DateString = CurrentData['Date']
+        TemperatureString = 'Temperature : ' + str(CurrentData['Temperature']) + ' [ºC]'
+        HumidityString = 'Humidity : ' + str(CurrentData['Humidity']) + ' [%]'
 
     except:
         DateString = '-- / -- / --'
@@ -75,13 +120,18 @@ def about():
 def GetCurrentData(measure):
     ReturnedString = ''
 
-    # As json object
-    CurrentDataAsJson = json.load(CurrentDataAsString)
+    global CurrentData
 
     if measure == 'Temperature':
-        ReturnedString = str(CurrentDataAsJson['Temperature'])
+        ReturnedString = str(CurrentData['Temperature'])
     elif measure == 'Humidity':
-        ReturnedString = str(CurrentDataAsJson['Humidity'])
+        ReturnedString = str(CurrentData['Humidity'])
+    elif measure == 'Timestamp':
+        ReturnedString = str(CurrentData['Timestamp'])
+    elif measure == 'Date':
+        ReturnedString = CurrentData['Date']
+    elif measure == 'All':
+        ReturnedString = json.dumps(CurrentData) 
     else:
         ReturnedString = '' 
 
@@ -93,14 +143,21 @@ def GetCurrentData(measure):
 # ---------------------  Other utilities   -------------------------- #
 
 
-# Url for upload current data as json by IoT device
-@WebServer.route('/CurrentData/<JsonObject>')
-def UploadCurrentData(JsonObject):
+# Url for upload current data as csv format by IoT device
+@WebServer.route('/CurrentData/<CSVObject>')
+def UploadCurrentData(CSVObject):
 
-    global CurrentDataAsString 
+    global CurrentData 
+
+    # CSVObject: temp_value, hum_value, timestamp, date
+    ListOfSplittedStrings = CSVObject.split(',')
+    print(ListOfSplittedStrings)
 
     # Upload Current Data Variable   
-    CurrentDataAsString = JsonObject
+    CurrentData['Temperature'] = float(ListOfSplittedStrings[0])
+    CurrentData['Humidity'] = float(ListOfSplittedStrings[1])
+    CurrentData['Timestamp'] = float(ListOfSplittedStrings[2])
+    CurrentData['Date'] = datetime.datetime.fromtimestamp(float(ListOfSplittedStrings[2]))
 
     return 'ok' 
 
