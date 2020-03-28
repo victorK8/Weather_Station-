@@ -5,6 +5,7 @@ from flask import Flask, render_template, url_for
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import plotly.graph_objects as go
 
 import json
 import os
@@ -71,9 +72,20 @@ LocationApp = dash.Dash(__name__, server=WebServer, routes_pathname_prefix='/Loc
 # Change page title
 LocationApp.title = " Weather Station "
 
+# MapFig
+import plotly.express as px
+
+df = px.data.gapminder().query("year==2007")
+fig = px.scatter_geo(df, locations="iso_alpha", color="continent",
+                     hover_name="country", size="pop",
+                     projection="natural earth")
+
 # Layout
 LocationApp.layout = html.Div(children=[
-    html.H1("Location")
+    dcc.Graph(
+        id="map",
+        figure = fig
+    )
 ], className = 'row')
 
 
