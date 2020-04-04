@@ -8,7 +8,6 @@
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css' rel='stylesheet' />
 
-
   <style>
     body {
       margin: 0;
@@ -23,49 +22,58 @@
     }
 
     ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-    position: fixed;
-    top: 0;
-    width: 100%;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #333;
+      position: fixed;
+      top: 0;
+      width: 100%;
     }
 
     li {
-    float: left;
+      float: left;
     }
 
     li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
     }
 
     li a:hover:not(.active) {
-    background-color: #111;
+      background-color: #111;
     }
 
     .active {
-    background-color: #4CAF50;
+      background-color: #4CAF50;
     }
 
-
+    .marker {
+      background-image: url({{ url_for('static', filename='marker_pic.jpg') }});
+      background-size: cover;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
 
   </style>
 
 </head>
+
 <body>
-
-
 
   <div id='map'></div>
   
   <script>
    
+    /* MapBox Token */
+    var  MapBox_Token = 'pk.eyJ1IjoibWFsdW1hazgiLCJhIjoiY2s4bHN4M2k2MDIzZDNpbnQ4dnA0emY2MiJ9.wdRUx_oW5QFGswjjWzlIWw';
+
     // If geolocation is enable
     if (navigator.geolocation) {
 
@@ -76,21 +84,67 @@
 
             console.log(gps_coors);
 
-            /* MapBox Token */
-            mapboxgl.accessToken = 'pk.eyJ1IjoibWFsdW1hazgiLCJhIjoiY2s4bHN4M2k2MDIzZDNpbnQ4dnA0emY2MiJ9.wdRUx_oW5QFGswjjWzlIWw';
 
             /* Create map */
             var map = new mapboxgl.Map({
-            container: 'map', // Specify the container ID
-            style: 'mapbox://styles/mapbox/outdoors-v11', // Specify which map style to use
-            center: gps_coors, // Specify the starting position [lng, lat]
-            zoom: 3.5 // Specify the starting zoom
-            
+              container: 'map', // Specify the container ID
+              style: 'mapbox://styles/mapbox/navigation-preview-day-v4', // Specify which map style to use
+              center: gps_coors, // Specify the starting position [lng, lat]
+              zoom: 3.5, // Specify the starting zoom
+              interactive:true, // Enable interactive map
+              keyboard:true, // Enable Key-Shortcurs
+              accessToken:MapBox_Token // Add the token
             });
+            
+            // Add Navigation Control
+            map.addControl(new mapboxgl.NavigationControl());
+
+            // Add Full Screen Option
+            map.addControl(new mapboxgl.FullscreenControl());
+            
+            // create marker/s settings
+            var geojson = {
+                type: 'FeatureCollection',
+                features: [{
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [-77.032, 38.913]
+                  },
+                  properties: {
+                    title: 'Mapbox',
+                    description: 'Washington, D.C.'
+                  }
+                },
+                {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Point',
+                    coordinates: gps_coors
+                  },
+                  properties: {
+                    title: 'Weather Station',
+                    description: 'Here, it is your fu**ing Weather Station'
+                  } 
+                }]
+              };
+
+              // add marker/s to map
+              geojson.features.forEach(function(marker) {
+
+                // create a HTML element for each feature
+                var el = document.createElement('div');
+                el.className = 'marker';
+
+                // make a marker for each feature and add to the map
+                new mapboxgl.Marker(el)
+                  .setLngLat(marker.geometry.coordinates)
+                  .addTo(map);
+              });
+              
+
         });
     } 
-
-
   </script>
 
    <!-- Index Menu -->
@@ -106,6 +160,7 @@
 
         </ul>
    </div>
+
   
 </body>
 </html>        
