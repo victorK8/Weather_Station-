@@ -6,9 +6,6 @@
   <!-- Title of web -->
   <title> Weather Station </title>
 
-  <!-- Refreh -->
-  <meta http-equiv="refresh" content="30">    
-   
   <!-- CSS script to set style -->
   <style>
 
@@ -16,25 +13,12 @@
         background-image: url({{ url_for('static', filename='background_pic.jpg') }});
         background-size: 1600px 800px;
     }
-
     #TextStyle {
         position: relative;
         text-align: center;
-        text-transform: uppercase;
-        font-size: 80px;
+        text-transform: lowercase;
+        font-size: 30px;
         margin-top: 80px;
-        font-family:"Times New Roman";
-        color: black;
-    }
-
-    #TextStyle2 {
-        position: relative;
-        text-align: center;
-        text-transform: uppercase;
-        font-size: 60px;
-        margin-top: 100px;
-        margin-left: 80px;
-        font-family:"Arial";
         color: black;
     }
     body {margin:0;}
@@ -78,23 +62,18 @@
 
 <body id = "BackgroundStyle">
     <!-- Text -->
-    <h1 id = TextStyle> Weather Station </h1>
-
-    <!-- Current Measures -->
-    <div><h1 id = TextSyle2> <center> {{ date }} </center></h2></div>
-    <div><h1 id = TextSyle2> <center> {{ temperature }} </center></h2></div>
-    <div><h1 id = TextSyle2> <center> {{ humidity }} </center></h2></div>
-
+    <p1> Contact Info (In progress). </p1>
 
     <!-- Index Menu -->
     <!-- Note: We use href="#" for test links. In a real web site this would be URLs. -->
     <ul>
-            <li><a href="">Home</a></li>
-            <li><a href="Dashboard">Dashboard</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Dashboard">Dashboard</a></li>
             <li><a href="/Downloads">Downloads</a></li>
             <li><a href="/Location">Location</a></li>
-            <li><a href="music.html">Music</a></li>
+            <li><a href="/Music">Music</a></li>
             <li><a href="about.html">About</a></li>
+
     </ul>
               
 </body>

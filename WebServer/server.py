@@ -123,6 +123,10 @@ def downloads():
 def about():
     return render_template('about.html')
 
+# Music page
+@WebServer.route('/music.html')
+def music():
+       return render_template('music.html')
 
 # --------------------- API -------------------------- # 
 
