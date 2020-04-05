@@ -46,7 +46,7 @@ Previously, you need to install some Python modules via ``` sudo pip3 install [P
 
 Modules like *flask*, *pyserial* .
 
-A linux script (*.sh* file) is in progress, in order to launch of Raspberry Pi software.
+A linux script (*.sh* file) is in progress, in order to launch all Raspberry Pi software.
 
 
 
