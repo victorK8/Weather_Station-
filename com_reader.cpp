@@ -6,16 +6,36 @@
 #include <unistd.h>
 #include <string.h>
 #include <iostream>
+#include <chrono> 
+#include <fstream>
 
 using namespace std;
 
-#define PORT 8888
 
-/* Functions */
+/* --- Global vars ---*/
+
+const string Path_To_Storage_LogFiles = "~/Desktop/Log_Files";
+const string Filename_Name = "RaspiWeatherStation_Log_";
+const string Header = "Temperature,Humidity,Timestamp,Date \n ";
+
+/* --- Weather structure --- */
+
+struct weather{
+    float temperature;
+    float humidity;
+}
+
+
+
+/* --- Functions --- */
+
+
+// Send message to the web server
+// As input get a string message with 
+// weather magnitudes in csv format
 int send_to_server(string message){
 
         // Local vars
-        string IP = "localhost";
         int mySocket = 0;
         struct sockaddr_in Web_Address;
         string request2send = "";
@@ -39,7 +59,7 @@ int send_to_server(string message){
 
         // Set web server properties
         Web_Address.sin_family = AF_INET; 
-        Web_Address.sin_port = htons(PORT); 
+        Web_Address.sin_port = htons(8888); 
 
         // Convert IP addresses from text to binary form 
         if(inet_pton(AF_INET, "127.0.0.1", &Web_Address.sin_addr)<=0) 
@@ -61,22 +81,21 @@ int send_to_server(string message){
         return 0;
 }
 
-/* App */
+/* ------ APP  -----*/
 int main(int argc, char const *argv[]){
 
-    bool run = true;
+    // Local vars
+    weather magnitudes;
 
     // Loop
-    while(run){
+    while(true){
+
+      string message_from_usb = "{\"Temperature\": 22, \"Humidity\": 55}\n";
 
       // Send message to server
       int rlst = send_to_server("500,500,10000000"); 
 
-      // Check result
-      if(rlst!=0)
-      {
-          run = false;
-      }
+
     }
 
 
