@@ -66,28 +66,6 @@ DashboardApp.layout = html.Div(children=[
 
 ], className = 'row')
 
-##### Location Dash App #####
-LocationApp = dash.Dash(__name__, server=WebServer, routes_pathname_prefix='/Location/')
-
-# Change page title
-LocationApp.title = " Weather Station "
-
-# MapFig
-import plotly.express as px
-
-df = px.data.gapminder().query("year==2007")
-fig = px.scatter_geo(df, locations="iso_alpha", color="continent",
-                     hover_name="country", size="pop",
-                     projection="natural earth")
-
-# Layout
-LocationApp.layout = html.Div(children=[
-    dcc.Graph(
-        id="map",
-        figure = fig
-    )
-], className = 'row')
-
 
 
 # -------------------- WEB BACKEND ----------------- #
@@ -127,6 +105,12 @@ def about():
 @WebServer.route('/music.html')
 def music():
        return render_template('music.html')
+
+
+# Location page
+@WebServer.route('/location.html')
+def location():
+       return render_template('location.html')
 
 # --------------------- API -------------------------- # 
 
@@ -195,6 +179,6 @@ def UploadFileToBrowser(filename):
 
 # Run tha server
 if __name__ == '__main__':
-    WebServer.run(host = '0.0.0.0', port=80, debug=True)
+    WebServer.run(host = '0.0.0.0', port=8888, debug=True)
 
 
