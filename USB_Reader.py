@@ -11,7 +11,7 @@ def SendDataToWebServer(MessageAsString):
 
         # Server data
         IP = 'localhost'
-        PORT = '80'
+        PORT = '8888'
 
         # Get request as string
         RequestAsString = 'GET /CurrentData/' + MessageAsString + ' HTTP/1.1\r\nHost: ' + IP + ':' + PORT + '\r\n\r\n'
