@@ -6,13 +6,13 @@
   <!-- Title of web -->
   <title> Weather Station </title>
 
+  <!-- add jquery and d3 -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+
   <!-- CSS script to set style -->
   <style>
 
-    #BackgroundStyle{
-        background-image: url({{ url_for('static', filename='background_pic.jpg') }});
-        background-size: 1600px 800px;
-    }
     #TextStyle {
         position: relative;
         text-align: center;
@@ -53,6 +53,57 @@
     .active {
     background-color: #4CAF50;
     }
+  
+  /* Style dash div */
+  .dash {
+    float: left;
+    background-color: #f1f1f1;
+    width: 100%;
+    height: 100%;
+  }
+  /* Style the tab */
+  .tab {
+    float: left;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    width: 15%;
+    height: 25%;
+  }
+
+  /* Style the buttons that are used to open the tab content */
+  .tab button {
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 22px 16px;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    background-color: #ddd;
+  }
+
+  /* Create an active/current "tab button" class */
+  .tab button.active {
+    background-color: rgb(61, 56, 56);
+  }
+
+  /* Header Style */
+  .HeaderStyle{
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 22px 16px;
+    text-align: center;
+    font-size : 50px;
+  }
+
 
   </style>
 
@@ -60,22 +111,78 @@
 
 
 
-<body id = "BackgroundStyle">
-    <!-- Text -->
-    <p1> Contact Info (In progress). </p1>
+<body>
 
-    <!-- Index Menu -->
-    <!-- Note: We use href="#" for test links. In a real web site this would be URLs. -->
-    <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="/Downloads">Downloads</a></li>
-            <li><a href="/location.html">Location</a></li>
-            <li><a href="/music.html">Music</a></li>
-            <li><a href="/about.html">About</a></li>
 
-    </ul>
-              
-</body>
+    <!-- Nav. Menu -->
+    <div>
+      <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="/Downloads">Downloads</a></li>
+          <li><a href="/location.html">Location</a></li>
+          <li><a href="/music.html">Music</a></li>
+          <li><a href="/about.html">About</a></li>
+  
+      </ul>
+    </div>
+  
+    <!-- spaces -->
+    <br></br>
+
+    <!-- dahsboard header  -->
+    <div id='dashboard' class='dash'>
+
+      <!-- tabs div -->
+      <div id='tabs' class="tab">
+        <button id="main">Main</button>
+        <button id="historical">Historical</button>
+        <button id="analysis">Analysis</button>
+      </div>
+
+      <!-- Header -->
+      <div>
+        <h1 class="HeaderStyle"> Weather Station Data </h1>
+      </div>
+
+    </div>
+
+    <!-- Chart -->
+    <div id='chart'> </div>
+
+
+    <!-- javascript -->
+    <script>
+
+      /* Global vars*/
+
+      const MAIN_STATE = 0;
+      const HISTORICAL_STATE = 0;
+      const ANALYSIS_STATE = 0;
+
+      var CurrentState = MAIN_STATE; // State of tabs => init as main
+
+
+      /* Button event handling */
+
+
+      /* Chart handling */
+      switch(CurrentState){
+
+        case MAIN_STATE:
+        break;
+
+        case HISTORICAL_STATE:
+        break;
+
+        case ANALYSIS_STATE:
+        break;
+
+      }
+
+
+
+    </script>
+
 
 </html>
