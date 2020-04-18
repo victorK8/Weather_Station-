@@ -12,6 +12,13 @@ import os
 import sys
 import datetime
 
+# Take arguments
+
+if len(sys.argv >= 2):
+    PORT = sys.argv[1]
+else:
+    PORT = 8888
+
 
 #### Global Variables ####
 
@@ -73,7 +80,7 @@ def music():
 @WebServer.route('/location.html')
 def location():
        return render_template('location.html')
-       
+
 
 # --------------------- API -------------------------- # 
 
@@ -129,7 +136,8 @@ def GetHistoData():
 
     # Check Measure request args
     if 'Measure' in request.args:
-        measure = request.args['Measure']
+        #measure = request.args['Measure']
+        pass
     else:
         return 404
 
@@ -178,6 +186,6 @@ def UploadFileToBrowser(filename):
 
 # Run tha server
 if __name__ == '__main__':
-    WebServer.run(host = '0.0.0.0', port=8888, debug=True)
+    WebServer.run(host = '0.0.0.0', port=PORT, debug=True)
 
 
