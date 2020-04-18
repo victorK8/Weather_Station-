@@ -2,10 +2,6 @@
 
 from flask import Flask, render_template, request, jsonify
 
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
-import plotly.graph_objects as go
 
 import json
 import os
@@ -14,7 +10,7 @@ import datetime
 
 # Take arguments
 
-if len(sys.argv >= 2):
+if len(sys.argv) >= 2:
     PORT = sys.argv[1]
 else:
     PORT = 8888

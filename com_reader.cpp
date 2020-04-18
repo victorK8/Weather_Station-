@@ -23,7 +23,7 @@ const string Header = "Temperature,Humidity,Timestamp,Date \n ";
 struct weather{
     float temperature;
     float humidity;
-}
+};
 
 
 
@@ -41,7 +41,7 @@ int send_to_server(string message){
         string request2send = "";
 
         // Make request 
-        request2send = "GET /CurrentData/" + message + " HTTP/1.1\r\nHost: localhost:8888  \r\n\r\n";
+        request2send = "GET /CurrentData/" + message + " HTTP/1.1\r\nHost: localhost:80  \r\n\r\n";
 
         // convert to char*
         char ptr_request[request2send.length() + 1]; 
@@ -59,7 +59,7 @@ int send_to_server(string message){
 
         // Set web server properties
         Web_Address.sin_family = AF_INET; 
-        Web_Address.sin_port = htons(8888); 
+        Web_Address.sin_port = htons(80); 
 
         // Convert IP addresses from text to binary form 
         if(inet_pton(AF_INET, "127.0.0.1", &Web_Address.sin_addr)<=0) 
