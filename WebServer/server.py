@@ -1,6 +1,6 @@
 # Server script
 
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, request, jsonify
 
 import dash
 import dash_core_components as dcc
@@ -19,53 +19,10 @@ import datetime
 CurrentData = {"Timestamp":2,"Date":"21/03/2020","Temperature": 30, "Humidity": 55}
 
 # Data path (Change to 'home/pi/Desktop/LogFiles')
-DataPath = r'C:\Users\Victor\Documents\GitHub\Weather_Station-\WebServer'
+DataPath = '~/Desktop/LogFiles'
 
 # Web server with Flask
 WebServer = Flask(__name__)
-
-##### Dashboard Dash App & Layout #####
-DashboardApp = dash.Dash(__name__, server=WebServer, routes_pathname_prefix='/Dashboard/')
-
-# Change page title
-DashboardApp.title = " Weather Station "
-
-# Current week data as json
-CurrentWeekData = {'data':[
-    {'x':[0,1,2,3,4,5,6],'y':[23,23,23,23.5,24,24],'type':'line','name':'Temp. [ºC]'},
-    {'x':[0,1,2,3,4,5,6],'y':[46,46,46,46,46,46.5,47],'type':'line','name':'Hum. [%]'}]
-    ,'layout':{'title': ' DataViz'}}
-
-#Layout
-DashboardApp.layout = html.Div(children=[
-    #Tabs
-    dcc.Tabs(
-        id = 'tabs',
-        children = [
-
-            # Tab for week's data
-            dcc.Tab(id='tab-1', label='DATAVIZ', children=[
-                # Chart 
-                dcc.Graph(
-                    id = "DatavizChart",
-                    figure = CurrentWeekData
-                )
-            ]),
-
-            # Tab for hystorical data
-            dcc.Tab(id='tab-2', label='HISTORICAL', children=[
-                dcc.Graph(id="HistoChart")
-            ]),
-
-            # Tab for statistics
-            dcc.Tab(id='tab-3', label='STATISTICS', children=[
-                dcc.Graph(id="StatChart")
-            ]),
-
-    ], className = 'row')
-
-], className = 'row')
-
 
 
 # -------------------- WEB BACKEND ----------------- #
@@ -92,9 +49,14 @@ def index():
     return render_template('index.html', date = DateString, temperature = TemperatureString, humidity = HumidityString)
 
 # Download page
-@WebServer.route('/Downloads')
+@WebServer.route('/downloads.html')
 def downloads():
-    return 'Downloads (Not yet)'
+    return render_template('downloads.html')
+
+# Dashboard
+@WebServer.route('/dashboard.html')
+def dashboard():
+    return render_template('dashboard.html')
 
 # About page
 @WebServer.route('/about.html')
@@ -111,16 +73,34 @@ def music():
 @WebServer.route('/location.html')
 def location():
        return render_template('location.html')
+       
 
 # --------------------- API -------------------------- # 
 
+### Current Data
 
 # Url for get current measure
-@WebServer.route('/Data/<measure>')
-def GetCurrentData(measure):
-    ReturnedString = ''
+@WebServer.route('/Data/Current/All', methods=['GET'])
+def GetAllCurrentData():    
 
     global CurrentData
+
+    return json.dumps(CurrentData) 
+
+
+# Url for get current measure
+@WebServer.route('/Data/Current', methods=['GET'])
+def GetCurrentData():
+
+    global CurrentData
+
+    # Check Measure request args
+    if 'Measure' in request.args:
+        measure = request.args['Measure']
+    else:
+        return 404
+
+    ReturnedString = ''
 
     if measure == 'Temperature':
         ReturnedString = str(CurrentData['Temperature'])
@@ -138,6 +118,25 @@ def GetCurrentData(measure):
     return ReturnedString
 
 
+
+### Historical Data
+
+# Url for get historical measure
+@WebServer.route('/Data/Historical', methods=['GET'])
+def GetHistoData():
+
+    global CurrentData
+
+    # Check Measure request args
+    if 'Measure' in request.args:
+        measure = request.args['Measure']
+    else:
+        return 404
+
+    ## Introduce code after here ##
+
+
+    return 'Not-Yet-'
 
 
 # ---------------------  Other utilities   -------------------------- #
