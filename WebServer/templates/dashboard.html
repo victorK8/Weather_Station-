@@ -6,6 +6,9 @@
   <!-- Title of web -->
   <title> Weather Station </title>
 
+  <!-- refresh -->
+  <meta http-equiv="refresh" content="2; URL=dashboard.html">
+
   <!-- add jquery and d3 -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -170,22 +173,11 @@
 
     <!-- javascript -->
     <script>
+      /* ---- Functions to data buffer ----*/
 
-      /* Global vars*/
+      /* ----- Handle de chart ------ */
 
-      const MAIN_STATE = 0;
-      const HISTORICAL_STATE = 0;
-      const ANALYSIS_STATE = 0;
-
-      var CurrentState = MAIN_STATE; // State of tabs => init as main
-
-
-      /* Button event handling */
-
-
-      /* Chart handling */
-
-      // Get data from backend
+      // Get data from backend ( ** Some changes here **)
       data = [
         {"timestamp": 5,"temperature":23.4, "humidity": 55.5}, 
         {"timestamp": 10,"temperature":23.5, "humidity": 56.5},
@@ -193,7 +185,6 @@
         {"timestamp": 50,"temperature":25.5, "humidity": 56.5},
         {"timestamp": 60,"temperature":23.5, "humidity": 60.5}
       ];
-
 
       // Chart svg properties
       var margin = {top: 20, right: 20, bottom: 70, left: 40};
@@ -240,7 +231,7 @@
             .call(yAxis)
 
       // Add hum
-      var svg1_bar_added = svg1_g.selectAll("path")
+      var svg1_bar_added = svg1_g.selectAll("plot")
             .data(data)
           .enter().append("circle")
             .style("fill", "blue")
@@ -249,7 +240,7 @@
             .attr("r", 4);
 
       // Add temp
-      var svg1_bar_added = svg1_g.selectAll("path")
+      var svg1_bar_added = svg1_g.selectAll("plot")
             .data(data)
           .enter().append("circle")
             .style("fill", "red")
@@ -262,7 +253,7 @@
       ticks_vector = []
       for(var i=0;i<max_y;i++){ticks_vector.push(i);}
 
-      var svg1_bar_added = svg1_g.selectAll("bar")
+      var svg1_bar_added = svg1_g.selectAll("plot")
             .data(ticks_vector)
           .enter().append("rect")
             .style("fill", "black")
@@ -275,7 +266,7 @@
       ticks_vector = []
       for(var i=0;i<max_x;i++){ticks_vector.push(i);}
 
-      var svg1_bar_added = svg1_g.selectAll("bar")
+      var svg1_bar_added = svg1_g.selectAll("plot")
             .data(ticks_vector)
           .enter().append("rect")
             .style("fill", "red")
@@ -284,6 +275,18 @@
             .attr("width", width)
             .attr("height", 0.5);
 
+      
+      /* Handle button's click events*/ 
+
+      $('#main').click(function(){
+      });
+
+      $('#historical').click(function(){
+      });
+
+
+      $('#analysis').click(function(){
+      });
 
 
 
