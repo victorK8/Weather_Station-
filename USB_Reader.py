@@ -16,8 +16,6 @@ login.LoadCredentialsFile("mycreds.txt")
 DriveUser = GoogleDrive(login)
 
 
-
-
 # Function to send string to web server by using GET Request
 def SendDataToWebServer(MessageAsString):
 
@@ -61,7 +59,7 @@ def UploadFileToGoogleDrive(PathToLogFile, filename):
 
 
 # File's Handling variables
-Path_To_Storage_LogFiles = '~/Desktop/Log_Files'
+Path_To_Storage_LogFiles = '/home/pi/Desktop/Log_Files'
 LogFilename = 'Log_File_' + str(time.time()) + '.csv'
 Header = 'Temperature,Humidity,Timestamp,Date \n'
 
