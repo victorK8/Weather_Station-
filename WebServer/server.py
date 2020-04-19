@@ -28,6 +28,7 @@ DataPath = '~/Desktop/LogFiles'
 WebServer = Flask(__name__)
 
 
+
 # -------------------- WEB BACKEND ----------------- #
 
 # Index page
