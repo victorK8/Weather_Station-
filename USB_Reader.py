@@ -60,7 +60,7 @@ def UploadFileToGoogleDrive(PathToLogFile, filename):
 
 # File's Handling variables
 Path_To_Storage_LogFiles = '/home/pi/Desktop/Log_Files'
-LogFilename = 'Log_File_' + str(time.time()) + '.csv'
+LogFilename = 'Log_File_' + str(int(time.time())) + '.csv'
 Header = 'Temperature,Humidity,Timestamp,Date \n'
 
 # Create first log file and write header
@@ -90,7 +90,7 @@ while True:
                 os.remove(os.path.join(Path_To_Storage_LogFiles,LogFilename)) 
 
                 # New filename
-                LogFilename = 'Log_File_' + str(time.time()) + '.csv'
+                LogFilename = 'Log_File_' + str(int(time.time())) + '.csv'
 
                 # Write header
                 LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'w')
