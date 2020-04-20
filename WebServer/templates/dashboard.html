@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+  <!-- Title of web -->
+  <title> Weather Station </title>
+
+  <!-- refresh -->
+  <meta http-equiv="refresh" content="2; URL=dashboard.html">
+
+  <!-- add jquery and d3 -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+
+  <!-- CSS script to set style -->
+  <style>
+
+    #TextStyle {
+        position: relative;
+        text-align: center;
+        text-transform: lowercase;
+        font-size: 30px;
+        margin-top: 80px;
+        color: black;
+    }
+    body {margin:0;}
+
+    ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    }
+
+    li {
+    float: left;
+    }
+
+    li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    }
+
+    li a:hover:not(.active) {
+    background-color: #111;
+    }
+
+    .active {
+    background-color: #4CAF50;
+    }
+  
+  /* Style dash div */
+  .dash {
+    float: left;
+    background-color: #f1f1f1;
+    width: 100%;
+    height: 100%;
+  }
+  /* Style the tab */
+  .tab {
+    float: left;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    width: 15%;
+    height: 25%;
+  }
+
+  /* Style the buttons that are used to open the tab content */
+  .tab button {
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 22px 16px;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    background-color: #ddd;
+  }
+
+  /* Create an active/current "tab button" class */
+  .tab button.active {
+    background-color: rgb(61, 56, 56);
+  }
+
+  /* Header Style */
+  .HeaderStyle{
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 22px 16px;
+    text-align: center;
+    font-size : 50px;
+  }
+
+  /* Style for charts*/
+  .svg-container{
+     display: inline-block;
+     width:100%,
+     height:100%;
+
+  }
+
+
+  </style>
+
+</head>
+
+
+
+<body>
+
+
+    <!-- Nav. Menu -->
+    <div>
+      <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="/downloads.html">Downloads</a></li>
+          <li><a href="/location.html">Location</a></li>
+          <li><a href="/music.html">Music</a></li>
+          <li><a href="/about.html">About</a></li>
+  
+      </ul>
+    </div>
+  
+    <!-- spaces -->
+    <br></br>
+
+    <!-- dahsboard header  -->
+    <div id='dashboard' class='dash'>
+
+      <!-- tabs div -->
+      <div id='tabs' class="tab">
+        <button id="main">Main</button>
+        <button id="historical">Historical</button>
+        <button id="analysis">Analysis</button>
+      </div>
+
+      <!-- Header -->
+      <div>
+        <h1 class="HeaderStyle"> Weather Station Data </h1>
+      </div>
+
+    </div>
+
+    <!-- spaces -->
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br> 
+    
+    <!-- Chart -->
+    <div> 
+      <center> <div id='chart' class="svg-container"></div></center>
+    </div>
+
+
+    <!-- javascript -->
+    <script>
+      /* ---- Functions to data buffer ----*/
+
+      /* ----- Handle de chart ------ */
+
+      // Get data from backend ( ** Some changes here **)
+      data = [
+        {"timestamp": 5,"temperature":23.4, "humidity": 55.5}, 
+        {"timestamp": 10,"temperature":23.5, "humidity": 56.5},
+        {"timestamp": 20,"temperature":23.4, "humidity": 55.5}, 
+        {"timestamp": 50,"temperature":25.5, "humidity": 56.5},
+        {"timestamp": 60,"temperature":23.5, "humidity": 60.5}
+      ];
+
+      // Chart svg properties
+      var margin = {top: 20, right: 20, bottom: 70, left: 40};
+      var width = 1200 - margin.left - margin.right;
+      var height = 400 - margin.top - margin.bottom;
+
+      // Set scales
+      var max_x = 60; // window of an hour
+      var max_y = 100; // max valu for humidity
+      var gap = 5; // gap var
+
+      var x = d3.scaleLinear().domain([0, max_x+gap/2]).range([0, width]);
+      var y = d3.scaleLinear().domain([0, max_y+gap]).range([height, 0]);
+
+      // Axis
+      var xAxis = d3.axisBottom().scale(x);
+      var yAxis = d3.axisLeft().scale(y);
+
+      // <svg></svg> into chart-0 div
+      var svg1 = d3.select("#chart").append("svg");
+
+      // Add title. <svg> <text></text> </svg>
+      var svg1_text = svg1.append("text")
+          .attr("class","chart-title")
+          .attr("x", width/2 -margin.left/1.2)
+          .attr("y", margin.top)
+          .text(" Temperature and Humidity ");
+
+      // <svg><g></g></svg>
+      var svg1_g = svg1.attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+      // <svg><g><g class="x axis"></g></g></svg>
+      var svg1_g_xAxis_added = svg1_g.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis)
+
+      // <svg><g><g class="x axis"></g><g class="y axis"></g></g></svg>
+      var svg1_g_yAxis_added = svg1_g.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+
+      // Add hum
+      var svg1_bar_added = svg1_g.selectAll("plot")
+            .data(data)
+          .enter().append("circle")
+            .style("fill", "blue")
+            .attr("cx", function(d) {return x(d.timestamp)})
+            .attr("cy", function(d) {return y(d.humidty);})
+            .attr("r", 4);
+
+      // Add temp
+      var svg1_bar_added = svg1_g.selectAll("plot")
+            .data(data)
+          .enter().append("circle")
+            .style("fill", "red")
+            .attr("cx", function(d) {return x(d.timestamp)})
+            .attr("cy", function(d) {return y(d.temperature);})
+            .attr("r", 4);
+
+
+      // Add horizontal grid
+      ticks_vector = []
+      for(var i=0;i<max_y;i++){ticks_vector.push(i);}
+
+      var svg1_bar_added = svg1_g.selectAll("plot")
+            .data(ticks_vector)
+          .enter().append("rect")
+            .style("fill", "black")
+            .attr("x", function(d) {return x(d)})
+            .attr("y",0)
+            .attr("width", 0.5)
+            .attr("height", height);
+
+      // Add vertical grid
+      ticks_vector = []
+      for(var i=0;i<max_x;i++){ticks_vector.push(i);}
+
+      var svg1_bar_added = svg1_g.selectAll("plot")
+            .data(ticks_vector)
+          .enter().append("rect")
+            .style("fill", "red")
+            .attr("x",0 )
+            .attr("y",function(d) {return y(d)})
+            .attr("width", width)
+            .attr("height", 0.5);
+
+      
+      /* Handle button's click events*/ 
+
+      $('#main').click(function(){
+      });
+
+      $('#historical').click(function(){
+      });
+
+
+      $('#analysis').click(function(){
+      });
+
+
+
+    </script>
+
+
+</html>

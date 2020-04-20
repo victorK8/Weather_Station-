@@ -74,77 +74,57 @@
     /* MapBox Token */
     var  MapBox_Token = 'pk.eyJ1IjoibWFsdW1hazgiLCJhIjoiY2s4bHN4M2k2MDIzZDNpbnQ4dnA0emY2MiJ9.wdRUx_oW5QFGswjjWzlIWw';
 
-    // If geolocation is enable
-    if (navigator.geolocation) {
-
-        // Get current position and share to global var gps_coors
-        navigator.geolocation.getCurrentPosition(function ShareCoordinaes(position){
-
-            var gps_coors = [ position.coords.longitude, position.coords.latitude];
-
-            console.log(gps_coors);
+        // Coordinates of weather station (Some changes in this array)
+        var origin_coors = [-1.75, 42.1833];
 
 
-            /* Create map */
-            var map = new mapboxgl.Map({
-              container: 'map', // Specify the container ID
-              style: 'mapbox://styles/mapbox/navigation-preview-day-v4', // Specify which map style to use
-              center: gps_coors, // Specify the starting position [lng, lat]
-              zoom: 3.5, // Specify the starting zoom
-              interactive:true, // Enable interactive map
-              keyboard:true, // Enable Key-Shortcurs
-              accessToken:MapBox_Token // Add the token
-            });
-            
-            // Add Navigation Control
-            map.addControl(new mapboxgl.NavigationControl());
-
-            // Add Full Screen Option
-            map.addControl(new mapboxgl.FullscreenControl());
-            
-            // create marker/s settings
-            var geojson = {
-                type: 'FeatureCollection',
-                features: [{
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [-77.032, 38.913]
-                  },
-                  properties: {
-                    title: 'Mapbox',
-                    description: 'Washington, D.C.'
-                  }
-                },
-                {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: gps_coors
-                  },
-                  properties: {
-                    title: 'Weather Station',
-                    description: 'Here, it is your fu**ing Weather Station'
-                  } 
-                }]
-              };
-
-              // add marker/s to map
-              geojson.features.forEach(function(marker) {
-
-                // create a HTML element for each feature
-                var el = document.createElement('div');
-                el.className = 'marker';
-
-                // make a marker for each feature and add to the map
-                new mapboxgl.Marker(el)
-                  .setLngLat(marker.geometry.coordinates)
-                  .addTo(map);
-              });
-              
-
+        /* Create map */
+        var map = new mapboxgl.Map({
+          container: 'map', // Specify the container ID
+          style: 'mapbox://styles/mapbox/navigation-preview-day-v4', // Specify which map style to use
+          center: origin_coors, // Specify the starting position [lng, lat]
+          zoom: 3.5, // Specify the starting zoom
+          interactive:true, // Enable interactive map
+          keyboard:true, // Enable Key-Shortcurs
+          accessToken:MapBox_Token // Add the token
         });
-    } 
+        
+        // Add Navigation Control
+        map.addControl(new mapboxgl.NavigationControl());
+
+        // Add Full Screen Option
+        map.addControl(new mapboxgl.FullscreenControl());
+        
+        // create marker/s settings
+        var geojson = {
+            type: 'FeatureCollection',
+            features: [{
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: origin_coors
+              },
+              properties: {
+                title: 'Weather Station Location',
+                description: 'Hello! Your station is here, bro!'
+              } 
+            }]
+          };
+
+          // add marker/s to map
+          geojson.features.forEach(function(marker) {
+
+            // create a HTML element for each feature
+            var el = document.createElement('div');
+            el.className = 'marker';
+
+            // make a marker for each feature and add to the map
+            new mapboxgl.Marker(el)
+              .setLngLat(marker.geometry.coordinates)
+              .addTo(map);
+          });
+            
+     
   </script>
 
    <!-- Index Menu -->
@@ -152,8 +132,8 @@
    <div>
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/Dashboard">Dashboard</a></li>
-            <li><a href="/Downloads">Downloads</a></li>
+            <li><a href="/dashboard.html">Dashboard</a></li>
+            <li><a href="/downloads.html">Downloads</a></li>
             <li><a href="/location.html">Location</a></li>
             <li><a href="/music.html">Music</a></li>
             <li><a href="about.html">About</a></li>

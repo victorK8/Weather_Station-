@@ -5,13 +5,23 @@ import datetime
 import time
 import json
 import socket
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+
+# Login To Google Account
+login = GoogleAuth()
+login.LoadCredentialsFile("mycreds.txt")
+
+# Google Drive User
+DriveUser = GoogleDrive(login)
+
 
 # Function to send string to web server by using GET Request
 def SendDataToWebServer(MessageAsString):
 
         # Server data
         IP = 'localhost'
-        PORT = '80'
+        PORT = '8888'
 
         # Get request as string
         RequestAsString = 'GET /CurrentData/' + MessageAsString + ' HTTP/1.1\r\nHost: ' + IP + ':' + PORT + '\r\n\r\n'
@@ -31,10 +41,26 @@ def SendDataToWebServer(MessageAsString):
         except:
                 print('Error sending current measure')
 
+# Function to upload data to google drive (Cloud Storage)
+def UploadFileToGoogleDrive(PathToLogFile, filename):
+
+        # Properties of file to upload in json format
+        File2Upload_Properties = {'title':filename}
+
+        # Object to upload a log file (check propertires)
+        File2Upload_Obj = DriveUser.CreateFile(File2Upload_Properties)  
+
+        # Set content of the file from log-file path
+        File2Upload_Obj.SetContentFile(PathToLogFile) 
+
+        # Upload
+        File2Upload_Obj.Upload()
+
+
 
 # File's Handling variables
 Path_To_Storage_LogFiles = '/home/pi/Desktop/Log_Files'
-LogFilename = 'RaspiWeatherStation_Log_' + str(time.time()) + '.csv'
+LogFilename = 'Log_File_' + str(int(time.time())) + '.csv'
 Header = 'Temperature,Humidity,Timestamp,Date \n'
 
 # Create first log file and write header
@@ -44,7 +70,9 @@ LogFile.close()
 
 # 24 hours timer
 time_0 = time.time()
-DAY = 24*3600 
+DAY_STAMP = 24*3600 
+
+
 
 # Open bus 
 bus = serial.Serial('/dev/ttyACM0', 9600, timeout = 5)
@@ -53,10 +81,16 @@ bus = serial.Serial('/dev/ttyACM0', 9600, timeout = 5)
 while True:
 
         # Change LogFilename, if a day passed 
-        if (time.time()-time_0) > DAY:
+        if (time.time()-time_0) > DAY_STAMP:
+                
+                # Upload to google drive 
+                UploadFileToGoogleDrive(os.path.join(Path_To_Storage_LogFiles,LogFilename), LogFilename)
+
+                # Remove for local storage
+                os.remove(os.path.join(Path_To_Storage_LogFiles,LogFilename)) 
 
                 # New filename
-                LogFilename = 'RaspiWeatherStation_Log_' + str(time.time()) + '.csv'
+                LogFilename = 'Log_File_' + str(int(time.time())) + '.csv'
 
                 # Write header
                 LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'w')
