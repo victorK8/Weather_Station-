@@ -1,6 +1,7 @@
 /* Firmware of Weather Station*/
 /* By victorK8 */
-
+  
+ 
 
 float temperature = 25.0; // In Celsius Degrees [ºC]
 float humidity = 55.6; // In [%]
@@ -8,17 +9,17 @@ float humidity = 55.6; // In [%]
 
 /* --- Functions --- */
 
-double GetTemp(){
-  unsigned int wADC;
-  double t;
+float GetTemp(){
 
   // The internal temperature has to be used
   // with the internal reference of 1.1V.
   // Channel 8 can not be selected with
   // the analogRead function yet.
 
-  // Set the internal reference and mux.
-  ADMUX = (_BV(REFS1) | _BV(REFS0) | _BV(MUX3));
+  // Set the internal reference and mux 8.
+  ADMUX = 0b11001000;
+
+  // Enable ADC
   ADCSRA |= _BV(ADEN);  // enable the ADC
 
   delay(20);            // wait for voltages to become stable.
@@ -28,14 +29,13 @@ double GetTemp(){
   // Detect end-of-conversion
   while (bit_is_set(ADCSRA,ADSC));
 
-  // Reading register "ADCW" takes care of how to read ADCL and ADCH.
-  wADC = ADCW;
-
-  // The offset of 324.31 could be wrong. It is just an indication.
-  t = (wADC - 324.31 ) / 1.22;
+  // Implement ADCL*4 - 260.45.
+  float result = ADCL;
+  result *= 4;
+  result -= 260.45;
 
   // The returned temperature is in degrees Celsius.
-  return (t);
+  return result;
 }
 
 
@@ -54,11 +54,11 @@ void loop() {
 
   /* Get measures */
 
-  temperature = (float) GetTemp();
+  temperature =  GetTemp();
   /* ... */
 
   /*Create JSON messge */
-  String message_as_string = "{\"Temperature\": " + String(temperature)+ ", \"Humidity\": " + String(humidity) + "}\n";
+  String message_as_string = "{\"Temperature\": " + String(temperature) + ", \"Humidity\": " + String(humidity) + "}\n";
   int message_size = message_as_string.length();
   
   /* String to char[]*/
