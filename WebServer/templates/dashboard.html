@@ -110,7 +110,7 @@
   /* Style for charts*/
   .svg-container{
      display: inline-block;
-     width:100%,
+     width:100%;
      height:100%;
 
   }
@@ -173,18 +173,22 @@
 
     <!-- javascript -->
     <script>
-      /* ---- Functions to data buffer ----*/
 
-      /* ----- Handle de chart ------ */
+      // Http request function
+      function httpGet(theUrl){
+          var xmlHttp = new XMLHttpRequest();
+          xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+          xmlHttp.send( null );
+          return xmlHttp.responseText;
+      }
+
+
+      var data = httpGet("/Data/Current/All");
+      console.log(data);
+      sessionStorage.setItem("new_measure", data);
 
       // Get data from backend ( ** Some changes here **)
-      data = [
-        {"timestamp": 5,"temperature":23.4, "humidity": 55.5}, 
-        {"timestamp": 10,"temperature":23.5, "humidity": 56.5},
-        {"timestamp": 20,"temperature":23.4, "humidity": 55.5}, 
-        {"timestamp": 50,"temperature":25.5, "humidity": 56.5},
-        {"timestamp": 60,"temperature":23.5, "humidity": 60.5}
-      ];
+      data = [];
 
       // Chart svg properties
       var margin = {top: 20, right: 20, bottom: 70, left: 40};
@@ -235,8 +239,8 @@
             .data(data)
           .enter().append("circle")
             .style("fill", "blue")
-            .attr("cx", function(d) {return x(d.timestamp)})
-            .attr("cy", function(d) {return y(d.humidty);})
+            .attr("cx", function(d) {return x(d.Timestamp)})
+            .attr("cy", function(d) {return y(d.Humidty);})
             .attr("r", 4);
 
       // Add temp
@@ -244,14 +248,14 @@
             .data(data)
           .enter().append("circle")
             .style("fill", "red")
-            .attr("cx", function(d) {return x(d.timestamp)})
-            .attr("cy", function(d) {return y(d.temperature);})
+            .attr("cx", function(d) {return x(d.Timestamp)})
+            .attr("cy", function(d) {return y(d.Temperature);})
             .attr("r", 4);
 
 
-      // Add horizontal grid
+      // Add vertical grid
       ticks_vector = []
-      for(var i=0;i<max_y;i++){ticks_vector.push(i);}
+      for(var i=0;i<(gap/2 + max_x);i++){ticks_vector.push(i);}
 
       var svg1_bar_added = svg1_g.selectAll("plot")
             .data(ticks_vector)
@@ -262,9 +266,9 @@
             .attr("width", 0.5)
             .attr("height", height);
 
-      // Add vertical grid
+      // Add horizontal grid
       ticks_vector = []
-      for(var i=0;i<max_x;i++){ticks_vector.push(i);}
+      for(var i=0;i<(max_y + gap);i+=5){ticks_vector.push(i);}
 
       var svg1_bar_added = svg1_g.selectAll("plot")
             .data(ticks_vector)
@@ -275,7 +279,15 @@
             .attr("width", width)
             .attr("height", 0.5);
 
-      
+
+      // Set legend
+      // Icon
+      svg1.append("circle").attr("cx",950).attr("cy",40).attr("r", 6).style("fill", "blue")
+      svg1.append("circle").attr("cx",950).attr("cy",70).attr("r", 6).style("fill", "red")
+      // Text
+      svg1.append("text").attr("x", 1000).attr("y", 40).text("Humidity [%]").style("font-size", "15px").attr("alignment-baseline","middle")
+      svg1.append("text").attr("x", 1000).attr("y", 70).text("Temperature [ºC]").style("font-size", "15px").attr("alignment-baseline","middle")
+
       /* Handle button's click events*/ 
 
       $('#main').click(function(){

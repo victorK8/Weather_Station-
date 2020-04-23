@@ -166,7 +166,7 @@ def UploadCurrentData(CSVObject):
     return 'ok' 
 
 
-# Url for download a log file by name
+# Url for download a log file by name (Some changes here)
 @WebServer.route('/DownloadLogFile/<filename>')
 def UploadFileToBrowser(filename):
 
