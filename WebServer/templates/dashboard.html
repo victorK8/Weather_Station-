@@ -7,7 +7,7 @@
   <title> Weather Station </title>
 
   <!-- refresh -->
-  <meta http-equiv="refresh" content="2; URL=dashboard.html">
+  <meta http-equiv="refresh" content="2">
 
   <!-- add jquery and d3 -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -164,6 +164,7 @@
     <br></br>
     <br></br>
     <br></br> 
+    <br></br> 
     
     <!-- Chart -->
     <div> 
@@ -174,6 +175,8 @@
     <!-- javascript -->
     <script>
 
+      /*  -------------    Functions ------------   */
+
       // Http request function
       function httpGet(theUrl){
           var xmlHttp = new XMLHttpRequest();
@@ -182,13 +185,49 @@
           return xmlHttp.responseText;
       }
 
+      // Get data of buffer as array of json objects
+      function GetDataFromBuffer(buffer){
 
-      var data = httpGet("/Data/Current/All");
-      console.log(data);
-      sessionStorage.setItem("new_measure", data);
+        ArrayOfJSObjects = [];
 
-      // Get data from backend ( ** Some changes here **)
-      data = [];
+        for(var i=0; i<buffer.length; i++){
+          ArrayOfJSObjects.push(JSON.parse(buffer.getItem(buffer.key(i))));
+        }
+
+        return ArrayOfJSObjects;
+      }
+
+      /*  -------------    Vars    ------------    */
+
+
+      // MAX BUFFER STORAGE LENGTH
+      var MAX_BUFFER_LENGTH = 1000;
+
+
+      /*  -------------    App Code  ------------    */
+
+      // Get timestamp
+      var date = new Date();
+      var timestamp = date.getTime();
+
+      // Get new data
+      var new_measure = httpGet("/Data/Current/All");
+      console.log(new_measure);
+
+      // Append to session storge buffer
+      if(sessionStorage.length < MAX_BUFFER_LENGTH){
+        sessionStorage.setItem(timestamp.toString(), new_measure);
+      }else{
+
+        // Remove first element
+        sessionStorage.removeItem(sessionStorage.key(0));
+
+        // Add the new element
+        sessionStorage.setItem(timestamp.toString(), new_measure);
+      }
+
+      // Get data from buffer to plot
+      data = GetDataFromBuffer(sessionStorage);
 
       // Chart svg properties
       var margin = {top: 20, right: 20, bottom: 70, left: 40};
@@ -204,8 +243,8 @@
       var y = d3.scaleLinear().domain([0, max_y+gap]).range([height, 0]);
 
       // Axis
-      var xAxis = d3.axisBottom().scale(x);
-      var yAxis = d3.axisLeft().scale(y);
+      var xAxis = d3.axisBottom().scale(x).ticks(10);
+      var yAxis = d3.axisLeft().scale(y).ticks(5);
 
       // <svg></svg> into chart-0 div
       var svg1 = d3.select("#chart").append("svg");
@@ -214,7 +253,7 @@
       var svg1_text = svg1.append("text")
           .attr("class","chart-title")
           .attr("x", width/2 -margin.left/1.2)
-          .attr("y", margin.top)
+          .attr("y", margin.top/1.5)
           .text(" Temperature and Humidity ");
 
       // <svg><g></g></svg>
@@ -235,7 +274,7 @@
             .call(yAxis)
 
       // Add hum
-      var svg1_bar_added = svg1_g.selectAll("plot")
+      var svg1_bar_added = svg1_g.selectAll("plot-1")
             .data(data)
           .enter().append("circle")
             .style("fill", "blue")
@@ -244,7 +283,7 @@
             .attr("r", 4);
 
       // Add temp
-      var svg1_bar_added = svg1_g.selectAll("plot")
+      var svg1_bar_added = svg1_g.selectAll("plot-2")
             .data(data)
           .enter().append("circle")
             .style("fill", "red")
@@ -255,7 +294,7 @@
 
       // Add vertical grid
       ticks_vector = []
-      for(var i=0;i<(gap/2 + max_x);i++){ticks_vector.push(i);}
+      for(var i=0;i<(gap/2 + max_x);i+=5){ticks_vector.push(i);}
 
       var svg1_bar_added = svg1_g.selectAll("plot")
             .data(ticks_vector)
@@ -285,12 +324,13 @@
       svg1.append("circle").attr("cx",950).attr("cy",40).attr("r", 6).style("fill", "blue")
       svg1.append("circle").attr("cx",950).attr("cy",70).attr("r", 6).style("fill", "red")
       // Text
-      svg1.append("text").attr("x", 1000).attr("y", 40).text("Humidity [%]").style("font-size", "15px").attr("alignment-baseline","middle")
-      svg1.append("text").attr("x", 1000).attr("y", 70).text("Temperature [ºC]").style("font-size", "15px").attr("alignment-baseline","middle")
+      svg1.append("text").attr("x", 1000).attr("y", 45).text("Humidity [%]").style("font-size", "15px").attr("alignment-baseline","middle")
+      svg1.append("text").attr("x", 1000).attr("y", 75).text("Temperature [ºC]").style("font-size", "15px").attr("alignment-baseline","middle")
 
       /* Handle button's click events*/ 
 
       $('#main').click(function(){
+        
       });
 
       $('#historical').click(function(){

@@ -19,7 +19,7 @@ else:
 #### Global Variables ####
 
 # Current data 
-CurrentData = {"Timestamp":2,"Date":"21/03/2020","Temperature": 30, "Humidity": 55}
+CurrentData = {"Timestamp":2,"Date":"21/03/2020 10:10:10","Temperature": 30, "Humidity": 55}
 
 # Data path (Change to 'home/pi/Desktop/LogFiles')
 DataPath = '~/Desktop/LogFiles'
@@ -88,7 +88,7 @@ def location():
 def GetAllCurrentData():    
 
     global CurrentData
-
+    print(CurrentData)
     return json.dumps(CurrentData) 
 
 
@@ -157,11 +157,13 @@ def UploadCurrentData(CSVObject):
     ListOfSplittedStrings = CSVObject.split(',')
     print(ListOfSplittedStrings)
 
+    DateAsDatetime = datetime.datetime.fromtimestamp(float(ListOfSplittedStrings[2]))
+
     # Upload Current Data Variable   
     CurrentData['Temperature'] = float(ListOfSplittedStrings[0])
     CurrentData['Humidity'] = float(ListOfSplittedStrings[1])
     CurrentData['Timestamp'] = float(ListOfSplittedStrings[2])
-    CurrentData['Date'] = datetime.datetime.fromtimestamp(float(ListOfSplittedStrings[2]))
+    CurrentData['Date'] = DateAsDatetime.strftime("%d/%m/%Y, %H:%M:%S")
 
     return 'ok' 
 
