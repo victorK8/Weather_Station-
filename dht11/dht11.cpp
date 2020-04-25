@@ -1,89 +1,132 @@
-//
-//    FILE: dht11.cpp
-// VERSION: 0.4.1
-// PURPOSE: DHT11 Temperature & Humidity Sensor library for Arduino
-// LICENSE: GPL v3 (http://www.gnu.org/licenses/gpl.html)
-//
-// DATASHEET: http://www.micro4you.com/files/sensor/DHT11.pdf
-//
-// HISTORY:
-// George Hadjikyriacou - Original version (??)
-// Mod by SimKard - Version 0.2 (24/11/2010)
-// Mod by Rob Tillaart - Version 0.3 (28/03/2011)
-// + added comments
-// + removed all non DHT11 specific code
-// + added references
-// Mod by Rob Tillaart - Version 0.4 (17/03/2012)
-// + added 1.0 support
-// Mod by Rob Tillaart - Version 0.4.1 (19/05/2012)
-// + added error codes
-//
+/*  DHT11 Temperature & Humidity Sensor
+*	
+*	Weather Station Project v.01
+*
+*
+*	By Víctor Malumbres Talles
+*/
 
 #include "dht11.h"
 
-// Return values:
-// DHTLIB_OK
-// DHTLIB_ERROR_CHECKSUM
-// DHTLIB_ERROR_TIMEOUT
-int dht11::read(int pin)
-{
-	// BUFFER TO RECEIVE
-	uint8_t bits[5];
-	uint8_t cnt = 7;
-	uint8_t idx = 0;
 
-	// EMPTY BUFFER
-	for (int i=0; i< 5; i++) bits[i] = 0;
+// Ask for a measure
+int ask_measure(){
 
-	// REQUEST SAMPLE
+	// wait 1 second
+	delay(1000);
+
+	// Pin as output
 	pinMode(pin, OUTPUT);
+
+	// Low 
 	digitalWrite(pin, LOW);
-	delay(18);
+
+	delay(Ask_Measure_T);
+
+	// High
 	digitalWrite(pin, HIGH);
+
+	// Some us delay ()
 	delayMicroseconds(40);
+
+	// Pin as input
 	pinMode(pin, INPUT);
 
-	// ACKNOWLEDGE or TIMEOUT
-	unsigned int loopCnt = 10000;
-	while(digitalRead(pin) == LOW)
-		if (loopCnt-- == 0) return DHTLIB_ERROR_TIMEOUT;
-
-	loopCnt = 10000;
-	while(digitalRead(pin) == HIGH)
-		if (loopCnt-- == 0) return DHTLIB_ERROR_TIMEOUT;
-
-	// READ OUTPUT - 40 BITS => 5 BYTES or TIMEOUT
-	for (int i=0; i<40; i++)
-	{
-		loopCnt = 10000;
-		while(digitalRead(pin) == LOW)
-			if (loopCnt-- == 0) return DHTLIB_ERROR_TIMEOUT;
-
-		unsigned long t = micros();
-
-		loopCnt = 10000;
-		while(digitalRead(pin) == HIGH)
-			if (loopCnt-- == 0) return DHTLIB_ERROR_TIMEOUT;
-
-		if ((micros() - t) > 40) bits[idx] |= (1 << cnt);
-		if (cnt == 0)   // next byte?
-		{
-			cnt = 7;    // restart at MSB
-			idx++;      // next byte!
-		}
-		else cnt--;
-	}
-
-	// WRITE TO RIGHT VARS
-        // as bits[1] and bits[3] are allways zero they are omitted in formulas.
-	humidity    = bits[0]; 
-	temperature = bits[2]; 
-
-	uint8_t sum = bits[0] + bits[2];  
-
-	if (bits[4] != sum) return DHTLIB_ERROR_CHECKSUM;
 	return DHTLIB_OK;
 }
-//
-// END OF FILE
-//
+
+
+// Read data from dht11 Sensor
+int dht1::read_dht11()
+{
+	// Data format: 8bit integral RH data + 8bit decimal RH data + 8bit integral T data + 8bit decimal T data + 8bit check sum. 
+
+	// Buffer 
+	uint8_t data[N_Bytes];
+
+
+	// Ask for measures
+	int rlst = ask_measure(); 
+
+    // Check sensor response signal
+	uint8_t check_time = 0;
+
+	// Check for low state
+	while(digitalRead(pin) == LOW){
+
+		check_time ++;
+		delaymicroseconds(1);
+
+		if(check_time > Response_Signal_T) return DHTLIB_ERROR_TIMEOUT;
+	}
+
+	// Check for high state
+	check_time = 0;
+	while(digitalRead(pin) == HIGH){
+
+		check_time ++;
+		delaymicroseconds(1);
+
+		if(check_time > Response_Signal_T) return DHTLIB_ERROR_TIMEOUT;
+	}
+
+
+	// Start data transmission
+
+	uint8_t ReadBytes = 0;
+	uint8_t ByteOfBits[8];
+
+	for (int i=0; i < N_Bytes; i++)
+	{
+		// Read a byte
+		for(int read_bits=0; read_bits<8;read_bits++){
+
+			// Wait for start transmission bit
+			check_time = 0;
+			while(digitalRead(pin) == LOW){
+
+				check_time ++;
+				delaymicroseconds(1);
+
+				if(check_time > Start_Transmission_Bit_T) return DHTLIB_ERROR_TIMEOUT;
+			}
+
+			// Data bit (26/28 us is 0, 70 us is)
+			check_time = 0;
+			while(digitalRead(pin) == HIGH){
+				check_time ++;
+				delaymicroseconds(1);
+			}
+
+			// Determine if bit is 0 or 1. Add to ByteOfBits buffer
+			if(check_time>30){
+				// Bit is one
+				data[i]+= pow(2,(8-read_bits));
+			}
+
+		}
+
+	}
+
+	// Reading is finished
+
+	// Check sum
+	if ((data[0]+data[1]+data[2]+data[3]) == data[N_Bytes-1]){
+
+		// Get Humidity
+		humidity = data[0];
+		humidity += ((float)data[1])/1000;
+
+		// Get Tempereature
+		temperature = data[2];
+		temperature += ((float)data[3])/1000;
+
+	} else{
+		return DHTLIB_ERROR_CHECKSUM;
+	}
+
+
+	return DHTLIB_OK;
+
+
+}
