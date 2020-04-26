@@ -11,8 +11,10 @@
 
     #BackgroundStyle{
         background-image: url({{ url_for('static', filename='background_pic.jpg') }});
-        background-size: 1600px 800px;
-    }
+        background-repeat: no-repeat;
+        background-size: cover;    
+        }
+
     #TextStyle {
         position: relative;
         text-align: center;
@@ -21,6 +23,12 @@
         margin-top: 80px;
         color: black;
     }
+
+    #download-menu{
+      padding-left: 1000px;  
+     }
+
+
     body {margin:0;}
 
     ul {
@@ -62,16 +70,33 @@
 
 <body id = "BackgroundStyle">
 
-    <!-- Text -->
-    <div> 
-        <br></br>
-        <br></br>
-        <br></br>
-        <h1> -Downloads- are in progress </h1>
+  
+  <br></br>
+  <br></br>
+  <br></br>
+
+
+
+  <!-- Download menu  -->
+  <div id="menu" class="download-menu"> 
+
+    <div id="first-date" >
+      <label for="start">Init date:</label>
+      <input type="date" id="init-date-input" name="trip-start" value="2020-04-20"  min="2020-01-01" max="2020-04-26">
     </div>
 
-    <!-- Index Menu -->
-    <!-- Note: We use href="#" for test links. In a real web site this would be URLs. -->
+    <br></br>
+
+    <div id="last-date" >
+      <label for="end">Last date:</label>
+      <input type="date" id="end-date-input" name="trip-start" value="2020-04-25"  min="2020-01-01" max="2020-04-26">
+    </div>
+
+  </div>
+
+
+  <!-- Index Menu -->
+  <div>
     <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/dashboard.html">Dashboard</a></li>
@@ -81,6 +106,7 @@
             <li><a href="/about.html">About</a></li>
 
     </ul>
+  </div>
               
 </body>
 
