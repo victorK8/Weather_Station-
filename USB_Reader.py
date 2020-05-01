@@ -59,7 +59,7 @@ def UploadFileToGoogleDrive(PathToLogFile, filename):
 
 
 # File's Handling variables
-Path_To_Storage_LogFiles = '/home/pi/Desktop/Log_Files'
+Path_To_Storage_LogFiles = '/home/raspi-of-malum/Desktop/Log_Files'
 LogFilename = 'Log_File_' + str(int(time.time())) + '.csv'
 Header = 'Temperature,Humidity,Timestamp,Date \n'
 
