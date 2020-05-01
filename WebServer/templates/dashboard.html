@@ -103,7 +103,7 @@
     display: block;
     background-color: inherit;
     color: black;
-    padding: 22px 16px;
+    padding: 10px 10px;
     text-align: center;
     font-size : 50px;
   }
@@ -111,8 +111,8 @@
   /* Style for charts*/
   .canvas-container{
      display: inline-block;
-     width:100%;
-     height:100%;
+     width:50%;
+     height:40%;
 
   }
 
@@ -168,8 +168,9 @@
     <br></br> 
     
     <!-- Chart -->
-    <div> 
-       <canvas id='chart' class="svg-container"></canvas>
+    <div id="datavix"> 
+      <!-- Canvas for charts -->
+      <canvas id='chart' class="canvas-container"></canvas>
     </div>
 
 
@@ -303,8 +304,12 @@
               // Parser data as json 
               var arrivedData = JSON.parse(data);
 
-              // Update chart-1 and chart-2
-              addData(chart, arrivedData.Timestamp, [arrivedData.Temperature, arrivedData.Humidity]);
+              // Put timestamp as string date
+              var time_as_date = new Date(arrivedData.Timestamp*1000);
+              var time_to_labeling =  time_as_date.getHours() + ":" + time_as_date.getMinutes() + ":" + time_as_date.getSeconds();
+
+              // Update chart
+              addData(chart, time_to_labeling, [arrivedData.Temperature, arrivedData.Humidity]);
 
           })
 
