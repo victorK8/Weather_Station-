@@ -182,7 +182,7 @@ def GetHistoData():
         first_t = request.args['Measure']
         pass
     else:
-        init_t = '00-00-00'
+        first_t = '00-00-00'
         return 404
 
     # Check last time args
@@ -197,7 +197,7 @@ def GetHistoData():
     ## Algorithm :
 
     # 1.Get a list of file of Google Drive that start with "Log_File_" and has .csv extension
-    List = DriveUser.ListFile()
+    ListOfFilesInGoogleDrive = []
 
     # 2. Conversion init and end dates(in format 'dd-mm-yyyy hh-mm-ss') to timestamp format
     InitDateAsTimestamp = time.mktime(datetime.datetime.strptime(first_date + ' ' + first_t,'%d-%m-%Y %HH-%MM-%SS').timetuple())
