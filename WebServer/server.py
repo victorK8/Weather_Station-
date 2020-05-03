@@ -182,7 +182,7 @@ def GetHistoData():
         first_t = request.args['Measure']
         pass
     else:
-        init-t = '00-00-00'
+        init_t = '00-00-00'
         return 404
 
     # Check last time args
