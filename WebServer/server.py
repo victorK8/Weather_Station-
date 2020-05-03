@@ -6,14 +6,39 @@ from flask import Flask, render_template, request, jsonify
 import json
 import os
 import sys
+import time
 import datetime
+import getpass as gp
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
 # Take arguments
-
 if len(sys.argv) >= 2:
     PORT = sys.argv[1]
 else:
     PORT = 8888
+
+
+# Google Drive Account
+UserName = gp.getuser()
+login = GoogleAuth()
+
+if UserName == 'maluma':
+
+    # If run server with my own pc 
+    login.LoadCredentialsFile("home/maluma/Escritorio/Projects/Weather_Station-/mycreds.txt")
+
+elif UserName == 'raspi-of-malum':
+    # If run server with raspberry pi 
+    login.LoadCredentialsFile("home/raspi-of-malum/Desktop/Weather_Station-/mycreds.txt") 
+
+else:
+    # No run with another user or device
+    print("Not allow")
+    exit(-1)
+
+# Google Drive User
+DriveUser = GoogleDrive(login)
 
 
 #### Global Variables ####
@@ -129,19 +154,68 @@ def GetCurrentData():
 @WebServer.route('/Data/Historical', methods=['GET'])
 def GetHistoData():
 
-    global CurrentData
+    #URI: /Data/Historical?Measure=<value>&FirstDate=<value>&LastDate=<value>
 
-    # Check Measure request args
+    # Check Measures args
     if 'Measure' in request.args:
-        #measure = request.args['Measure']
+        measure = request.args['Measure']
         pass
     else:
         return 404
 
-    ## Introduce code after here ##
+    # Check FirstDate args
+    if 'FirstDate' in request.args:
+        first_date = request.args['Measure']
+        pass
+    else:
+        return 404
+
+    # Check DateEnd args
+    if 'LastDate' in request.args:
+        last_date = request.args['Measure']
+        pass
+    else:
+        return 404
+    
+    # Check first time args
+    if 'FirstTime' in request.args:
+        first_t = request.args['Measure']
+        pass
+    else:
+        init-t = '00-00-00'
+        return 404
+
+    # Check last time args
+    if 'LastTime' in request.args:
+        last_t = request.args['Measure']
+        pass
+    else:
+        last_t = '00-00-00'
+        return 404
 
 
-    return 'Not-Yet-'
+    ## Algorithm :
+
+    # 1.Get a list of file of Google Drive that start with "Log_File_" and has .csv extension
+    List = DriveUser.ListFile()
+
+    # 2. Conversion init and end dates(in format 'dd-mm-yyyy hh-mm-ss') to timestamp format
+    InitDateAsTimestamp = time.mktime(datetime.datetime.strptime(first_date + ' ' + first_t,'%d-%m-%Y %HH-%MM-%SS').timetuple())
+    LastDateAsTimestamp = time.mktime(datetime.datetime.strptime(last_date + ' ' + last_t,'%d-%m-%Y %HH-%MM-%SS').timetuple())
+
+
+    # Based on measure id return 
+    if measure == 'All':
+        return 'Not-Yet'
+    elif measure == 'Temperature':
+        return 'Not-Yet'
+    elif measure == 'Humidity':
+        return 'Not-Yet'
+
+    elif:
+        return 404
+
+    return 'ok'
 
 
 # ---------------------  Other utilities   -------------------------- #
