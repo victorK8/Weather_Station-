@@ -211,8 +211,7 @@ def GetHistoData():
         return 'Not-Yet'
     elif measure == 'Humidity':
         return 'Not-Yet'
-
-    elif:
+    else:
         return 404
 
     return 'ok'
