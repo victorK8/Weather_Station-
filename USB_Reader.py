@@ -96,6 +96,9 @@ while True:
                 LogFile = open(os.path.join(Path_To_Storage_LogFiles,LogFilename),'w')
                 LogFile.write(Header)
                 LogFile.close()
+                
+                # Update time_0
+                time_0 = time.time()
 
 
         # any message?
