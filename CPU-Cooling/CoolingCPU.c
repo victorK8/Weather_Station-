@@ -4,13 +4,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <wiringPi.h>
+#include <time.h>
 
-#define MAX_SIZE 20
+#define MAX_SIZE 6
+
+const float MAX_CPU_TEMP = 70.0;
+const float PWM_SCALER = 1204.0;
 
 /* ------- Functions ---------- */
 int GetTemperatureFromCPU(float temp){
-
-    /* ----- 1. Read the return of a command line ------ */
 
     // FILE object to read
     FILE * fp; 
@@ -30,17 +33,16 @@ int GetTemperatureFromCPU(float temp){
 
         // Close fp
         pclose(fp);
-
-        // Show content
-        if(content != NULL) printf("CPU Temp: %s [ºC]  .\n", content);
+        
+        // Cast string to float
+        temp = atof(content);
 
     }else{
         printf("Error in cpu temperature request");
         return -1;
     }
 
-    /* ---- 2. Cast content from string to float */
-    temp = 50.0;
+
 
     return 0;
 }
@@ -54,6 +56,10 @@ int main(int argc, char **argv){
 
     // Local vars
     float cpu_temp;
+    time_t * stamp;
+
+    // Settings gpio as PWM
+    pinMode(1,PWM_OUTPUT);
 
     while(1){
 
@@ -61,7 +67,20 @@ int main(int argc, char **argv){
         int check = GetTemperatureFromCPU(cpu_temp);
         if(check == -1) { return -1;}
 
-        // Calculate and apply cooling action as PWM signal
+        // Get stamp
+        time(stamp);
+
+        // Calculate action (control P)
+        float action = cpu_temp * (MAX_CPU_TEMP/PWM_SCALER);
+
+        // Execute action as pwm
+        pwmWrite(1,(int)action);
+
+        //Show raspi statement
+        printf(" -- RASPI COOLING STATEMENT -- \n ");
+        printf("    --> %s   \n ", ctime(stamp));
+        printf("    --> CPU Temp: %f [ºC] \n", cpu_temp);
+        printf("    --> PWM Action: %d [10-bit] \n", (int)action);
 
         // Sleep for 2 seconds
         sleep(2);
