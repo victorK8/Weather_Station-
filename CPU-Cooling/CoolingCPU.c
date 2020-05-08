@@ -11,9 +11,12 @@
 
 const float MAX_CPU_TEMP = 70.0;
 const float PWM_SCALER = 1204.0;
+const float PWM_OFFSET = 500.0;
 
 /* ------- Functions ---------- */
-int GetTemperatureFromCPU(float temp){
+float GetTemperatureFromCPU(void){
+    // Temp
+    float temp = 0.0;
 
     // FILE object to read
     FILE * fp; 
@@ -36,15 +39,14 @@ int GetTemperatureFromCPU(float temp){
         
         // Cast string to float
         temp = atof(content);
+	
 
     }else{
         printf("Error in cpu temperature request");
-        return -1;
+        exit(-1);
     }
 
-
-
-    return 0;
+    return temp;
 }
 
 
@@ -56,34 +58,39 @@ int main(int argc, char **argv){
 
     // Local vars
     float cpu_temp;
-    time_t * stamp;
+    time_t  stamp;
 
     // Settings gpio as PWM
+    if (wiringPiSetup () == -1) exit (1);
+   
     pinMode(1,PWM_OUTPUT);
 
     while(1){
 
         // Read temperature from cpu
-        int check = GetTemperatureFromCPU(cpu_temp);
-        if(check == -1) { return -1;}
+        float cpu_temp = GetTemperatureFromCPU();
 
         // Get stamp
-        time(stamp);
+        time(&stamp);
 
         // Calculate action (control P)
-        float action = cpu_temp * (MAX_CPU_TEMP/PWM_SCALER);
+        float action = cpu_temp * (MAX_CPU_TEMP/PWM_SCALER) + PWM_OFFSET;
 
         // Execute action as pwm
         pwmWrite(1,(int)action);
 
         //Show raspi statement
-        printf(" -- RASPI COOLING STATEMENT -- \n ");
-        printf("    --> %s   \n ", ctime(stamp));
-        printf("    --> CPU Temp: %f [ºC] \n", cpu_temp);
-        printf("    --> PWM Action: %d [10-bit] \n", (int)action);
+        printf(" RASPI COOLING STATEMENT - %s ", ctime(&stamp));
+	printf("\n");
 
-        // Sleep for 2 seconds
-        sleep(2);
+        printf(" -> CPU Temp: %f [ºC] \n", cpu_temp);
+        printf(" -> PWM Action: %d [10-bit] \n", (int)action);
+
+	printf("\n");
+	printf("\n");
+
+        // Sleep for 5 seconds
+        sleep(5);
 
     }
     
