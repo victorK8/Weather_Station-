@@ -3,23 +3,20 @@
 #include <float.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
+#include <unistd.h>
 
 #define MAX_SIZE 20
 
 /* ------- Functions ---------- */
-/* ------- Variables ---------- */
+int GetTemperatureFromCPU(float temp){
 
-int main(int argc, char **argv){
-
-    /* -----  Read the return of a command line ------ */
+    /* ----- 1. Read the return of a command line ------ */
 
     // FILE object to read
     FILE * fp; 
 
     // Command line to run
-    const char cmd[] = "sensors";  
-    //const chart cmd[] = "vcgencmd measure_temp";
+    const char cmd[] = "vcgencmd measure_temp | egrep -o '[0-9]*\\.[0-9]*'";
 
     // Apply command and get the return into fp
     fp = popen(cmd, "r"); 
@@ -35,15 +32,41 @@ int main(int argc, char **argv){
         pclose(fp);
 
         // Show content
-        if(content != NULL) printf("File is : %s .\n", content);
+        if(content != NULL) printf("CPU Temp: %s [ºC]  .\n", content);
 
     }else{
         printf("Error in cpu temperature request");
         return -1;
     }
 
+    /* ---- 2. Cast content from string to float */
+    temp = 50.0;
+
+    return 0;
+}
 
 
+
+
+/* -------- App ------------- */
+
+int main(int argc, char **argv){
+
+    // Local vars
+    float cpu_temp;
+
+    while(1){
+
+        // Read temperature from cpu
+        int check = GetTemperatureFromCPU(cpu_temp);
+        if(check == -1) { return -1;}
+
+        // Calculate and apply cooling action as PWM signal
+
+        // Sleep for 2 seconds
+        sleep(2);
+
+    }
     
     return 0;
 }
