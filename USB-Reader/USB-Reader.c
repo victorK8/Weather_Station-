@@ -24,7 +24,15 @@
 
 
 /* ----- Functions ---------- */
+int ParserSerialMessageIntoStruct(){
+    return 0;
+}
 
+/* --------  Structs ------ */
+struct SerialMessage{
+    float Temperature;
+    float Humidity;
+};
 
 /* -------- Global variables ----- */
 
@@ -49,6 +57,7 @@ int main(int argc, char *argv[]){
     FILE * fp; // File Handling
     char Path[1024]; // Full Path of current log file
     time_t TimeStamp; // Timer 
+    struct SerialMessage json; // For parser serial message
 
     // Request timestamp 
     time(&TimeStamp_0);
