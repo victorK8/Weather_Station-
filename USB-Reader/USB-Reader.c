@@ -19,9 +19,6 @@
 // Handling errors
 #include <errno.h>
 
-
-#define BAUDRATE 9600
-#define COM '/dev/ttyACM0' // COM PORT FOR ARDUINO
 #define DAY_STAMP 86400 // DAY IN SECONDS 
 
 
@@ -59,9 +56,6 @@ int main(int argc, char *argv[]){
     // Concat to filename to Path[]
     sprintf(Path, "%s%s%ld%s", Path_To_Storage_LogFiles, Filename, TimeStamp_0, ".csv");
 
-    // Write header
-    FILE *fp;
-
     // Open file
     fp = fopen(Path, "w");
 
@@ -77,9 +71,58 @@ int main(int argc, char *argv[]){
         exit(-1);
     }
 
+    // Open Serial COM
+    int bus = open("/dev/ttyACM0", O_RDWR);
+
+    // Check errors 
+    if (bus < 0) {
+        printf("Error opening serial bus");
+        exit(-1);
+    }
+
+    // Config PORT (A lot of stuff here)
+    // Create new termios struc, we call it 'tty' for convention
+    struct termios tty;
+    memset(&tty, 0, sizeof tty);
+
+    // Read in existing settings, and handle any error
+    if(tcgetattr(bus, &tty) != 0) {
+        printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
+        exit(-1);
+    }
+
+    tty.c_cflag &= ~PARENB; // Clear parity bit, disabling parity (most common)
+    tty.c_cflag &= ~CSTOPB; // Clear stop field, only one stop bit used in communication (most common)
+    tty.c_cflag |= CS8; // 8 bits per byte (most common)
+    tty.c_cflag &= ~020000000000; // Disable RTS/CTS hardware flow control (most common)
+    tty.c_cflag |= CREAD | CLOCAL; // Turn on READ & ignore ctrl lines (CLOCAL = 1)
+
+    tty.c_lflag &= ~ICANON;
+    tty.c_lflag &= ~ECHO; // Disable echo
+    tty.c_lflag &= ~ECHOE; // Disable erasure
+    tty.c_lflag &= ~ECHONL; // Disable new-line echo
+    tty.c_lflag &= ~ISIG; // Disable interpretation of INTR, QUIT and SUSP
+    tty.c_iflag &= ~(IXON | IXOFF | IXANY); // Turn off s/w flow ctrl
+    tty.c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL); // Disable any special handling of received bytes
+
+    tty.c_oflag &= ~OPOST; // Prevent special interpretation of output bytes (e.g. newline chars)
+    tty.c_oflag &= ~ONLCR; // Prevent conversion of newline to carriage return/line feed
+
+    tty.c_cc[VTIME] = 10;    // Wait for up to 1s (10 deciseconds), returning as soon as any data is received.
+    tty.c_cc[VMIN] = 0;
+
+    // Set in/out baud rate to be 9600
+    cfsetispeed(&tty, B9600);
+    cfsetospeed(&tty, B9600);
+
+    // Save tty settings, also checking for error
+    if (tcsetattr(bus, TCSANOW, &tty) != 0) {
+        printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
+        exit(-1);
+    }
+
     // Loop
     while(1){
-
 
         // Get curren time
         time(&TimeStamp);
@@ -114,10 +157,23 @@ int main(int argc, char *argv[]){
 
         // Something in COM ?
         // Read it 
+        char buffer[256];
+        memset(&buffer, '\0', sizeof(buffer));
+
+        // Read bytes. The behaviour of read() (e.g. does it block?,
+        // how long does it block for?) depends on the configuration
+        // settings above, specifically VMIN and VTIME
+        int n = read(bus, &buffer, sizeof(buffer));
+
+        printf("%s", buffer);
+
         // Append to log file
         // Send to web via TCP/IP
 
     }
+
+    // Close Bus 
+    close(bus);
 
     return 0;
 }
