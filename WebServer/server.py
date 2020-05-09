@@ -23,12 +23,11 @@ else:
 UserName = gp.getuser()
 login = GoogleAuth()
 
-if UserName == 'maluma':
+if UserName == 'root':
 
     # If run server with my own pc 
-    login.LoadCredentialsFile("home/maluma/Escritorio/Projects/Weather_Station-/mycreds.txt")
+    # login.LoadCredentialsFile("home/maluma/Escritorio/Projects/Weather_Station-/mycreds.txt")
 
-elif UserName == 'raspi-of-malum':
     # If run server with raspberry pi 
     login.LoadCredentialsFile("home/raspi-of-malum/Desktop/Weather_Station-/mycreds.txt") 
 
