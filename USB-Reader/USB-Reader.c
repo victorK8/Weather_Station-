@@ -31,17 +31,20 @@
 /* -------- Global variables ----- */
 
 // Path to storage log files
-char Path_To_Storage_LogFiles[] = "/home/raspi-of-malum/Desktop/Log_Files/Raspi_Log_File_";
+const char Path_To_Storage_LogFiles[] = "/home/raspi-of-malum/Desktop/Log_Files/";
+
+// Pre header of filename
+const char Filename[] = "Raspi_Log_File_";
 
 // Header
-char Header[] = "Temperature,Humidity,Timestamp,Date \n";
+const char Header[] = "Temperature,Humidity,Timestamp,Date \n";
 
 // Ext.
-char Ext[] = ".csv";
+const char Ext[] = ".csv";
 
 // time_stamp struct
 time_t TimeStamp;
-char TimeStampAsSrt[] = "";
+
 
 
 /* ----------- App ------------ */
@@ -51,22 +54,19 @@ int main(int argc, char *argv[]){
     // Request timestamp 
     time(&TimeStamp);
    
-    // Convert timestamp in to string format
 
-    // Concat to filename all strings 
-    char *Filename = Path_To_Storage_LogFiles;
-    strcat(Filename, &TimeStampAsSrt);
-    strcat(Filename, &Ext);
+    // Concat to filename to Path[]
+    char Path[1024];
+    sprintf(Path, "%s%s%ld%s", Path_To_Storage_LogFiles,Filename,TimeStamp,Ext);
 
     // Write header.
     FILE *fp;
-    const char mode = 'w';
 
     // Open file
-    fp = fopen(Filename, &mode);
+    fp = fopen(Path, "w");
 
     // Write file
-    if(fprintf(fp, &Header) < 0){
+    if(fprintf(fp, Header) < 0){
         printf("Error writing in Log-File");
         exit(-1);
     }
