@@ -108,7 +108,7 @@ int main(int argc, char *argv[]){
     tty.c_oflag &= ~OPOST; // Prevent special interpretation of output bytes (e.g. newline chars)
     tty.c_oflag &= ~ONLCR; // Prevent conversion of newline to carriage return/line feed
 
-    tty.c_cc[VTIME] = 10;    // Wait for up to 1s (10 deciseconds), returning as soon as any data is received.
+    tty.c_cc[VTIME] = 12;    // Wait for up to 1.2s (12 deciseconds), returning as soon as any data is received. Arduino send data each second
     tty.c_cc[VMIN] = 0;
 
     // Set in/out baud rate to be 9600
@@ -136,14 +136,11 @@ int main(int argc, char *argv[]){
             // Update Filename
             sprintf(Path, "%s%s%ld%s", Path_To_Storage_LogFiles, Filename, TimeStamp_0, ".csv");
 
-            // Write header
-            FILE *fp;
-
             // Open file
             fp = fopen(Path, "w");
 
             // Write file
-            if(fprintf(fp, Header) < 0){
+            if(fprintf(fp, "Temperature,Humidity,Timestamp,Date \n") < 0){
                 printf("Error writing in Log-File");
                 exit(-1);
             }
@@ -160,14 +157,31 @@ int main(int argc, char *argv[]){
         char buffer[256];
         memset(&buffer, '\0', sizeof(buffer));
 
-        // Read bytes. The behaviour of read() (e.g. does it block?,
-        // how long does it block for?) depends on the configuration
-        // settings above, specifically VMIN and VTIME
+        // Read bytes.
         int n = read(bus, &buffer, sizeof(buffer));
 
-        printf("%s", buffer);
+        // Check some errors in serial message
+
+        // Parse json 
 
         // Append to log file
+        /*
+        fp = fopen(Path, "a");
+
+        // Write file
+        if(fprintf(fp, "") < 0){
+            printf("Error writing in Log-File");
+            exit(-1);
+        }
+
+        // Close file
+        if(fclose(fp) != 0) {
+            printf("Error closing in Log-File");
+            exit(-1);
+        }
+        */
+
+
         // Send to web via TCP/IP
 
     }
