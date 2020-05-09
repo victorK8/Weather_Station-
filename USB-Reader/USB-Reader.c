@@ -27,46 +27,21 @@
 
 /* ----- Functions ---------- */
 
-int WriteToLogFile(char *FilePath[], char *StringToAdd[], char mode){
-    /* ----------------------
-     *
-     * FilePath is a string that points directory of filename
-     * StringToAdd is a string that append to file
-     * mode is "w" or "a" 
-     * --------------------------
-     */
-
-    FILE *fp;
-
-    // Open file
-    fp = fopen(FilePath, &mode);
-
-    // Write file
-    if(fprintf(fp, StringToAdd) < 0) return -1;
-
-    // Close file
-    if(fclose(fp) != 0) return -1;
-
-    return 0;
-}
 
 /* -------- Global variables ----- */
 
 // Path to storage log files
-char Path_To_Storage_LogFiles[] = "/home/raspi-of-malum/Desktop/Log_Files";
-
-// Filename
-char LogFilename[] = "Raspi_Log_File_";
-
-// Extension
-char Extension[] = ".csv";
+char Path_To_Storage_LogFiles[] = "/home/raspi-of-malum/Desktop/Log_Files/Raspi_Log_File_";
 
 // Header
 char Header[] = "Temperature,Humidity,Timestamp,Date \n";
 
+// Ext.
+char Ext[] = ".csv";
+
 // time_stamp struct
 time_t TimeStamp;
-char  TimeStampAsSrt[] = "";
+char TimeStampAsSrt[] = "";
 
 
 /* ----------- App ------------ */
@@ -78,18 +53,29 @@ int main(int argc, char *argv[]){
    
     // Convert timestamp in to string format
 
-    // Concat filename
-    strcat(&LogFilename, &TimeStampAsSrt);
-    strcat(&LogFilename, &Extension);
+    // Concat to filename all strings 
+    char *Filename = Path_To_Storage_LogFiles;
+    strcat(Filename, &TimeStampAsSrt);
+    strcat(Filename, &Ext);
 
     // Write header.
-    if(WriteToLogFile(&LogFilename, &Header, "w")!= 0){
-        // Log errror
-        printf(" Error writing header ");
-        // Go out
+    FILE *fp;
+    const char mode = 'w';
+
+    // Open file
+    fp = fopen(Filename, &mode);
+
+    // Write file
+    if(fprintf(fp, &Header) < 0){
+        printf("Error writing in Log-File");
         exit(-1);
     }
 
+    // Close file
+    if(fclose(fp) != 0) {
+        printf("Error closing in Log-File");
+        exit(-1);
+    }
 
     // loop
     while(1){
