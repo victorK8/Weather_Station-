@@ -22,6 +22,9 @@
 // Handling errors
 #include <errno.h>
 
+// Handling json files 
+#include <json-c/json.h>
+
 
 
 #define DAY_STAMP 86400 // DAY IN SECONDS 
@@ -36,6 +39,8 @@
 int ParserSerialMessageIntoStruct(){
     return 0;
 }
+
+// Storage file into external disk (1TB)
 
 // Send data to web via tcp/ip socket
 int SendMessageToWeb(char *MessageAsStr){
@@ -76,10 +81,9 @@ int SendMessageToWeb(char *MessageAsStr){
 
 
 /* --------  Structs ------ */
-struct SerialMessage{
-    float Temperature;
-    float Humidity;
-};
+struct json_object *ParsedMessage;
+struct json_object *Temperature;
+struct json_object *Humidity;
 
 /* -------- Global variables ----- */
 
@@ -104,7 +108,8 @@ int main(int argc, char *argv[]){
     FILE * fp; // File Handling
     char Path[1024]; // Full Path of current log file
     time_t TimeStamp; // Timer 
-    struct SerialMessage json; // For parser serial message
+    char Message2SendToWeb[] = "";
+    char Message2Storage[] = "";
 
     // Request timestamp 
     time(&TimeStamp_0);
@@ -186,6 +191,12 @@ int main(int argc, char *argv[]){
         // Check last of a day
         if(((int)difftime(TimeStamp, TimeStamp_0)) > DAY_STAMP){
 
+            // Storage log file into external disk
+            // ....
+
+            // Remove log file
+            // ...
+
             // Update stamp marker
             TimeStamp_0 = TimeStamp;
 
@@ -216,34 +227,39 @@ int main(int argc, char *argv[]){
         // Read bytes.
         int n = read(bus, &buffer, sizeof(buffer));
 
-        // Check some errors in serial message
+        // Parse json message
+        ParsedMessage = json_tokener_parse(buffer);
 
-        // Parse json 
+        // Update temperature and humidity
+        json_object_object_get_ex(ParsedMessage, "Temperature", &Temperature);
+        json_object_object_get_ex(ParsedMessage, "Humidity", &Humidity);
+
+        // Change message to storage
+        sprintf(Message2Storage, "%s,%s,%ld,%s \n", json_object_get_string(Temperature), json_object_get_string(Humidity), TimeStamp,  ctime(&TimeStamp));
+
+        // Change message to send to web
+        sprintf(Message2SendToWeb, "%s,%s,%ld", json_object_get_string(Temperature), json_object_get_string(Humidity), TimeStamp);
 
         // Append to log file
-
-        /*
         fp = fopen(Path, "a");
 
         // Write file
-        if(fprintf(fp, "") < 0){
-            printf("Error writing in Log-File");
-            exit(-1);
+        if(fprintf(fp, Message2Storage) < 0){
+           printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
+           exit(-1);
         }
 
         // Close file
         if(fclose(fp) != 0) {
-            printf("Error closing in Log-File");
+            printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
             exit(-1);
         }
-        */
-
-
+        
         // Send to web via TCP/IP
-        char Message2SendToWeb[] = "11,11,11,21.5";
-
         if(SendMessageToWeb(Message2SendToWeb) < 0) exit(-1);
-        }
+
+        // Log
+        printf(Message2Storage);
 
     }
 
