@@ -52,13 +52,15 @@ int SendMessageToWeb(char *MessageAsStr){
 
     // Create TCP/IP socket, checking possible errors
     if((SocketStatus = socket(AF_INET, SOCK_STREAM, 0))<0) return -1;
-
+    
     // Connect to host
     if((ComStatus = connect(SocketStatus,(struct sockaddr *)&host_settings,sizeof(host_settings)))<0) return -1;
-
+    
     // Send Message to host
-    if((MsgStatus=send(ComStatus,MessageAsStr,sizeof(MessageAsStr),0))<0) return -1;
-
+    if((MsgStatus=send(SocketStatus,MessageAsStr,strlen(MessageAsStr),0))<0){
+	 printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
+	return -1;	
+     }
     // Close socket
     close(SocketStatus);
 
