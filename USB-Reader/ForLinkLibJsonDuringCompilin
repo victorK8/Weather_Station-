@@ -1,0 +1,1 @@
+gcc USB-Reader.c -ljson-c -o RUN
