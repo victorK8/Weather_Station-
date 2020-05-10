@@ -29,7 +29,7 @@ if UserName == 'root':
     # login.LoadCredentialsFile("home/maluma/Escritorio/Projects/Weather_Station-/mycreds.txt")
 
     # If run server with raspberry pi 
-    login.LoadCredentialsFile("home/raspi-of-malum/Desktop/Weather_Station-/mycreds.txt") 
+    login.LoadCredentialsFile("/home/raspi-of-malum/Desktop/Weather_Station-/mycreds.txt") 
 
 else:
     # No run with another user or device
