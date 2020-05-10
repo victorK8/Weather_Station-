@@ -51,16 +51,22 @@ int SendMessageToWeb(char *MessageAsStr){
     host_settings.sin_addr.s_addr = inet_addr(HOST_IP);
 
     // Create TCP/IP socket, checking possible errors
-    if((SocketStatus = socket(AF_INET, SOCK_STREAM, 0))<0) return -1;
+    if((SocketStatus = socket(AF_INET, SOCK_STREAM, 0))<0){
+        printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
+        return -1;	
+    }
     
     // Connect to host
-    if((ComStatus = connect(SocketStatus,(struct sockaddr *)&host_settings,sizeof(host_settings)))<0) return -1;
+    if((ComStatus = connect(SocketStatus,(struct sockaddr *)&host_settings,sizeof(host_settings)))<0){
+        printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
+        return -1;	
+    }
     
     // Send Message to host
     if((MsgStatus=send(SocketStatus,MessageAsStr,strlen(MessageAsStr),0))<0){
-	 printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
-	return -1;	
-     }
+        printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
+        return -1;	
+    }
     // Close socket
     close(SocketStatus);
 
@@ -117,7 +123,7 @@ int main(int argc, char *argv[]){
 
     // Close file
     if(fclose(fp) != 0) {
-        printf("Error closing in Log-File \n");
+        printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
         exit(-1);
     }
 
@@ -126,7 +132,7 @@ int main(int argc, char *argv[]){
 
     // Check errors 
     if (bus < 0) {
-        printf("Error opening serial bus \n");
+        printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
         exit(-1);
     }
 
@@ -191,13 +197,13 @@ int main(int argc, char *argv[]){
 
             // Write file
             if(fprintf(fp, "Temperature,Humidity,Timestamp,Date \n") < 0){
-                printf("Error writing in Log-File \n");
+                printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
                 exit(-1);
             }
 
             // Close file
             if(fclose(fp) != 0) {
-                printf("Error closing in Log-File \n");
+                printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
                 exit(-1);
             }
         }
@@ -236,9 +242,7 @@ int main(int argc, char *argv[]){
         // Send to web via TCP/IP
         char Message2SendToWeb[] = "11,11,11,21.5";
 
-        if(SendMessageToWeb(Message2SendToWeb) < 0){
-            printf("Error while sending data to web host \n");
-            exit(-1);
+        if(SendMessageToWeb(Message2SendToWeb) < 0) exit(-1);
         }
 
     }
