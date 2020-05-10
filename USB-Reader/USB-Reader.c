@@ -108,8 +108,8 @@ int main(int argc, char *argv[]){
     FILE * fp; // File Handling
     char Path[1024]; // Full Path of current log file
     time_t TimeStamp; // Timer 
-    char Message2SendToWeb[] = "";
-    char Message2Storage[] = "";
+    char Message2SendToWeb[100];
+    char Message2Storage[100];
 
     // Request timestamp 
     time(&TimeStamp_0);
@@ -234,8 +234,6 @@ int main(int argc, char *argv[]){
         json_object_object_get_ex(ParsedMessage, "Temperature", &Temperature);
         json_object_object_get_ex(ParsedMessage, "Humidity", &Humidity);
 
-        // Change message to storage
-        sprintf(Message2Storage, "%s,%s,%ld,%s \n", json_object_get_string(Temperature), json_object_get_string(Humidity), TimeStamp,  ctime(&TimeStamp));
 
         // Change message to send to web
         sprintf(Message2SendToWeb, "%s,%s,%ld", json_object_get_string(Temperature), json_object_get_string(Humidity), TimeStamp);
@@ -244,7 +242,7 @@ int main(int argc, char *argv[]){
         fp = fopen(Path, "a");
 
         // Write file
-        if(fprintf(fp, Message2Storage) < 0){
+        if(fprintf(fp, "%s,%s,%ld,%s \n", json_object_get_string(Temperature), json_object_get_string(Humidity), TimeStamp,  ctime(&TimeStamp)) < 0){
            printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
            exit(-1);
         }
@@ -258,8 +256,9 @@ int main(int argc, char *argv[]){
         // Send to web via TCP/IP
         if(SendMessageToWeb(Message2SendToWeb) < 0) exit(-1);
 
-        // Log
-        printf(Message2Storage);
+        // Log measures
+        printf("%s \n Temperature: %s [ºC] \n Humidity: %s [/100] \n", ctime(&TimeStamp), json_object_get_string(Temperature), json_object_get_string(Humidity));
+
 
     }
 
