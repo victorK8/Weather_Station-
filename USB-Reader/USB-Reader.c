@@ -109,13 +109,13 @@ int main(int argc, char *argv[]){
 
     // Write file
     if(fprintf(fp, Header) < 0){
-        printf("Error writing in Log-File");
+        printf("Error writing in Log-File \n");
         exit(-1);
     }
 
     // Close file
     if(fclose(fp) != 0) {
-        printf("Error closing in Log-File");
+        printf("Error closing in Log-File \n");
         exit(-1);
     }
 
@@ -124,7 +124,7 @@ int main(int argc, char *argv[]){
 
     // Check errors 
     if (bus < 0) {
-        printf("Error opening serial bus");
+        printf("Error opening serial bus \n");
         exit(-1);
     }
 
@@ -189,13 +189,13 @@ int main(int argc, char *argv[]){
 
             // Write file
             if(fprintf(fp, "Temperature,Humidity,Timestamp,Date \n") < 0){
-                printf("Error writing in Log-File");
+                printf("Error writing in Log-File \n");
                 exit(-1);
             }
 
             // Close file
             if(fclose(fp) != 0) {
-                printf("Error closing in Log-File");
+                printf("Error closing in Log-File \n");
                 exit(-1);
             }
         }
@@ -235,7 +235,7 @@ int main(int argc, char *argv[]){
         char Message2SendToWeb[] = "11,11,11,21.5";
 
         if(SendMessageToWeb(Message2SendToWeb) < 0){
-            printf("Error while sending data to web host");
+            printf("Error while sending data to web host \n");
             exit(-1);
         }
 
