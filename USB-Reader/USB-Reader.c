@@ -15,18 +15,57 @@
 
 // Handling sockets in c
 #include <sys/socket.h>
+#include <netdb.h> 
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 // Handling errors
 #include <errno.h>
 
+
+
 #define DAY_STAMP 86400 // DAY IN SECONDS 
+#define PORT 80
+#define HOST_IP "127.0.0.1"
 
 
 
 /* ----- Functions ---------- */
+
+// Parser serial message into struct
 int ParserSerialMessageIntoStruct(){
     return 0;
 }
+
+// Send data to web via tcp/ip socket
+int SendMessageToWeb(char *MessageAsStr){
+
+    int SocketStatus; // fp for socket status
+    int ComStatus; // fp for connection status with host
+    int MsgStatus; // fp for sended message status 
+    struct sockaddr_in host_settings; // Info. About host server
+
+    // Host settings
+    host_settings.sin_family = AF_INET;
+    host_settings.sin_port = htons(PORT);
+    host_settings.sin_addr.s_addr = inet_addr(HOST_IP);
+
+    // Create TCP/IP socket, checking possible errors
+    if((SocketStatus = socket(AF_INET, SOCK_STREAM, 0))<0) return -1;
+
+    // Connect to host
+    if((ComStatus = connect(SocketStatus,(struct sockaddr *)&host_settings,sizeof(host_settings)))<0) return -1;
+
+    // Send Message to host
+    if((MsgStatus=send(ComStatus,MessageAsStr,sizeof(MessageAsStr),0))<0) return -1;
+
+    // Close socket
+    close(SocketStatus);
+
+    return 0;
+}
+
+
 
 /* --------  Structs ------ */
 struct SerialMessage{
@@ -174,6 +213,7 @@ int main(int argc, char *argv[]){
         // Parse json 
 
         // Append to log file
+
         /*
         fp = fopen(Path, "a");
 
@@ -192,6 +232,12 @@ int main(int argc, char *argv[]){
 
 
         // Send to web via TCP/IP
+        char Message2SendToWeb[] = "11,11,11,21.5";
+
+        if(SendMessageToWeb(Message2SendToWeb) < 0){
+            printf("Error while sending data to web host");
+            exit(-1);
+        }
 
     }
 
