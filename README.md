@@ -28,10 +28,6 @@ Ambient Sensors and Arduino Uno connections are in progress
 **WebServer** contains software of high-level software of Raspberri Pi. Web-Server is based on Flask Module as backend in Python (check server.py script). As front-end, basic HTML, CSS and Javascript script are used (Check template folder). Web-Server provides the services of data visualization, weather station geolocation, music (only for entertainment purposes). Its state is in progress (Geo-Location is finished).
 
 ---
-Server : 
-
-DNS Domain: "alfarostation.ddns.net"  (Provisional, only for 30 days)
----
 ## How do I use your code, bro?
 
 The first step is downloading my repository into your Raspberry Pi.
