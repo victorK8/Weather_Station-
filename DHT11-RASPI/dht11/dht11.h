@@ -5,12 +5,12 @@
 *
 *	By Víctor Malumbres Talles
 */
+#include <inttypes.h>
 #include <wiringPi.h>
+#include <math.h>
 
 #ifndef dht11_h
 #define dht11_h
-
-#include <Arduino.h>
 
 #define DHTLIB_VERSION "v.01"
 
@@ -30,19 +30,37 @@ class dht11{
 
 	public:
 
-		/*  ------  variables  ------ */
-
-		// Magnitude variables
-		float temperature; 
-		float humidity;
-
-		// Number of pin connected with dht11 sensor
-		int pin;
-
 		/*  ------ Functions ------*/
+
+                // Set-up
+		int setup();
+                
+                // Set pin
+                int setPin(int number);
+                
+                // Get pin
+                int getPin();
+                
+                // Get temp. measure
+                float getTemperature();
+
+                // Get hum. measure
+                float getHumidity();
 
 		// Read magnitudes from dht11 sensors	
 		int read_dht11();
 
-}
 
+	private:
+                /*  ------  variables  ------ */
+
+                // Magnitude variables
+                float temperature;
+                float humidity;
+
+                // Number of pin connected with dht11 sensor
+                int pin;
+
+};
+
+#endif

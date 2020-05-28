@@ -10,7 +10,7 @@
 
 
 // Ask for a measure
-int ask_measure(){
+int ask_measure(int pin){
 
 	// wait 1 second
 	delay(1000);
@@ -37,7 +37,28 @@ int ask_measure(){
 
 // Set-up
 int dht11::setup(){
-   wiringPiSetup();
+   return wiringPiSetup();
+}
+
+// Set pin
+int dht11::setPin(int number){
+   pin = number;
+   return 0;
+}
+
+// Get pin
+int dht11::getPin(){
+  return pin;
+}
+
+// Get temp. measure
+float dht11::getTemperature(){
+  return temperature;
+}
+
+// Get hum. measure
+float dht11::getHumidity(){
+ return humidity;
 }
 
 
@@ -51,7 +72,7 @@ int dht11::read_dht11()
 
 
 	// Ask for measures
-	int rlst = ask_measure(); 
+	int rlst = ask_measure(pin); 
 
     // Check sensor response signal
 	uint8_t check_time = 0;
@@ -60,7 +81,7 @@ int dht11::read_dht11()
 	while(digitalRead(pin) == LOW){
 
 		check_time ++;
-		delaymicroseconds(1);
+		delayMicroseconds(1);
 
 		if(check_time > Response_Signal_T) return DHTLIB_ERROR_TIMEOUT;
 	}
@@ -70,7 +91,7 @@ int dht11::read_dht11()
 	while(digitalRead(pin) == HIGH){
 
 		check_time ++;
-		delaymicroseconds(1);
+		delayMicroseconds(1);
 
 		if(check_time > Response_Signal_T) return DHTLIB_ERROR_TIMEOUT;
 	}
@@ -91,7 +112,7 @@ int dht11::read_dht11()
 			while(digitalRead(pin) == LOW){
 
 				check_time ++;
-				delaymicroseconds(1);
+				delayMicroseconds(1);
 
 				if(check_time > Start_Transmission_Bit_T) return DHTLIB_ERROR_TIMEOUT;
 			}
@@ -100,7 +121,7 @@ int dht11::read_dht11()
 			check_time = 0;
 			while(digitalRead(pin) == HIGH){
 				check_time ++;
-				delaymicroseconds(1);
+				delayMicroseconds(1);
 			}
 
 			// Determine if bit is 0 or 1. Add to ByteOfBits buffer
