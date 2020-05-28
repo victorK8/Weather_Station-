@@ -16,7 +16,7 @@ int main(void){
     dht11 SensorObj;
 
     // Set pin
-    SensorObj.setPin(11);
+    SensorObj.setPin(30);
 	
     // Set-up obj sensor
     if(SensorObj.setup()<0){
@@ -25,14 +25,14 @@ int main(void){
     }
 
     while(1){
-     
      // Take measure
-     int MeasureFlag = SensorObj.read_dht11();
-	
-     // Print in console
-     printf("Temperature: %f [ºC] Humidity: %f [PerCento] \n",SensorObj.getTemperature(), SensorObj.getHumidity());
-     
-     usleep(1000000);
+     if(SensorObj.read_dht11_v2()==0){
+      	// Print in console
+     	printf("Temperature: %f [ºC] Humidity: %f [PerCento] \n",SensorObj.getTemperature(), SensorObj.getHumidity());
+     }
+
+     //Wait 5 seconds
+     usleep(5000000);
 	
     }
     return 0;

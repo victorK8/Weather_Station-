@@ -17,7 +17,7 @@ DEPS = $(INCLUDE_DIR)/dht11.h
 SRCS =  $(SRC_DIR)/dht11.cpp $(SRC_DIR)/main.cpp
 
 # EXE NAME
-EXE = main
+EXE = run
 
 $(EXE): $(SRCS)
 	$(CC) $(CFLAGS) -o $(EXE) $(SRCS)

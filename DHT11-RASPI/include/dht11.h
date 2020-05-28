@@ -8,6 +8,7 @@
 #include <inttypes.h>
 #include <wiringPi.h>
 #include <math.h>
+#include <stdio.h>
 
 #ifndef dht11_h
 #define dht11_h
@@ -49,6 +50,9 @@ class dht11{
 
 		// Read magnitudes from dht11 sensors	
 		int read_dht11();
+
+                 // V2 of reading sensor
+                int read_dht11_v2();
 
 
 	private:
