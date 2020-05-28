@@ -74,7 +74,7 @@ int dht11::read_dht11()
 	// Ask for measures
 	int rlst = ask_measure(pin); 
 
-    // Check sensor response signal
+        // Check sensor response signal
 	uint8_t check_time = 0;
 
 	// Check for low state

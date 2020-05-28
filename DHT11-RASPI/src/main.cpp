@@ -3,11 +3,11 @@
 */
 
 
-#include <../dht11/dht11.h>
+#include <dht11.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-
+#include <unistd.h>
 
 // APP
 int main(void){
@@ -16,7 +16,7 @@ int main(void){
     dht11 SensorObj;
 
     // Set pin
-    SensorObj.setPin(17);
+    SensorObj.setPin(11);
 	
     // Set-up obj sensor
     if(SensorObj.setup()<0){
@@ -24,13 +24,16 @@ int main(void){
       exit(-1);
     }
 
-    while(true){
+    while(1){
      
      // Take measure
      int MeasureFlag = SensorObj.read_dht11();
 	
      // Print in console
-     printf("Temperature: %f [ºC] Humidity: %f [PerCento]",SensorObj.getTemperature(), SensorObj.getHumidity());
+     printf("Temperature: %f [ºC] Humidity: %f [PerCento] \n",SensorObj.getTemperature(), SensorObj.getHumidity());
+     
+     usleep(1000000);
+	
     }
     return 0;
 }
