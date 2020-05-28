@@ -25,12 +25,8 @@ Ambient Sensors and Arduino Uno connections are in progress
 
 **USB_Reader.py** is low-level software of Raspberry Pi. Get the arrived data (json format) from Arduino Board via Usb and parse data in order to storage data in Raspberry as CSV Format. Also, it does calls to high-level (WebServer) in order to share arrived data as csv format too (Finished). Upload once a day log-file to Google drive. mycred.txt (My google account) adn credential_secret.json is an API-KEY for use Google API.
 
-**WebServer** contains software of high-level software of Raspberri Pi. Web-Server is based on Flask Module as backend in Python (check server.py script). As front-end, basic Html,CSS and Javascript script are used (Check template folder). Web-Server provides the services of data visualization, weather station geolocation, music (only for entertainment purposes). Its state is in progress (Geo-Location is finished).
+**WebServer** contains software of high-level software of Raspberri Pi. Web-Server is based on Flask Module as backend in Python (check server.py script). As front-end, basic HTML, CSS and Javascript script are used (Check template folder). Web-Server provides the services of data visualization, weather station geolocation, music (only for entertainment purposes). Its state is in progress (Geo-Location is finished).
 
----
-Server : 
-
-DNS Domain: "alfarostation.ddns.net"  (Provisional, only for 30 days)
 ---
 ## How do I use your code, bro?
 

@@ -35,12 +35,21 @@
 
 /* ----- Functions ---------- */
 
-// Parser serial message into struct
-int ParserSerialMessageIntoStruct(){
-    return 0;
-}
+//Storage file into external disk (1TB)
+int StorageFileIntoExtDisk(char *PathToFileToStorage){
+ 
+  // Local Vars
+  char cmd2execure[50]; 
+  FILE * fp;
 
-// Storage file into external disk (1TB)
+
+
+	
+
+
+
+   return 0;
+}
 
 // Send data to web via tcp/ip socket
 int SendMessageToWeb(char *MessageAsStr){
