@@ -1,8 +1,9 @@
 /*********** Script for getting measures *******************
 ************ of temperature & humidity *********************
 ************ by using dht11 in raspberry pi 4 **************
-************ By Víctor Malumbres ***************************/
+************ By Victor Malumbres ***************************/
 
+// Basic libraries
 #include <dht11.h>
 #include <stdio.h>
 #include <errno.h>
@@ -12,18 +13,18 @@
 // Handling time
 #include <time.h>
 
-// Handling serial coms
-#include <termios.h>
-#include <fcntl.h>
-
 // Handling sockets in c
 #include <sys/socket.h>
 #include <netdb.h> 
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+// Web Servers Host Settings
 #define PORT 80
 #define HOST_IP "127.0.0.1"
+
+// Day in seconds
+#define DAY_IN_SECONDS 86400
 
 /****** Functions ******/
 
@@ -69,31 +70,36 @@ int SendMessageToWeb(char *MessageAsStr){
 // Path to different external storage device
 const char PATH_TO_EXT_DISK[] = "/media/DISK_1TB/Log_Files";
 const char PATH_TO_EXT_USB[] = "/media/USB_16GB/Log_Files";
-const char filename[] = "RaspiOfMalum_LogFile.csv";
+const char filename[] = "RaspiOfMalum";
 
 // APP
 int main(void){
+
     // Local vars
+    time_t TimeStamp0;
     time_t TimeStamp;
     char Message2SendToWeb[250];
-    
 
+    // Get timestamps
+    time(&TimeStamp);
+    time(&TimeStamp0);
+    
     // Storage file handling
     char FullPathToFile[250];
     FILE *fp;
     
     // Full path to log file
-    sprintf(FullPathToFile, "%s/%s",PATH_TO_EXT_DISK,filename);
+    sprintf(FullPathToFile, "%s/%s-%ld.csv",PATH_TO_EXT_DISK,filename,TimeStamp);
 
     // Write Header
     fp = fopen(FullPathToFile,"w");
     fprintf(fp,"Temperature,Humidity,TimeStamp,Date \n");
     fclose(fp);
 
-    // Create dht11 object
+    // Create dht11 sensor object
     dht11 SensorObj;
 
-    // Set pin
+    // Set pin where sensor is connected
     SensorObj.setPin(30);
 	
     // Set-up obj sensor
@@ -107,30 +113,43 @@ int main(void){
      // Get time
      time(&TimeStamp);
 
-     // Take measure
+     // Check if a day have been passed
+     if(difftime(TimeStamp,TimeStamp0) >= DAY_IN_SECONDS){
+	
+        // Update the path to a new log-file
+	sprintf(FullPathToFile, "%s/%s_%ld.csv",PATH_TO_EXT_DISK,filename,TimeStamp);
+	
+	// Create the new log-file and write the header
+    	FILE *fp;
+		
+    	// Write Header
+    	fp = fopen(FullPathToFile,"w");
+    	fprintf(fp,"Temperature,Humidity,TimeStamp,Date \n");
+        fclose(fp);
+
+	// Update timestamp marker
+        time(&TimeStamp0);
+ 
+     }
+
+     // Take measure of temperature and humidity
      if(SensorObj.read_dht11_v2()==0){
-      	// Print in console
-     	printf("Date:%sTemperature: %f [ºC] Humidity: %f [PerCento] \n",ctime(&TimeStamp), SensorObj.getTemperature(), SensorObj.getHumidity());
-        printf("\n");
-        // Create message to send to webserver
+
+      	// Create message to send to web-server
         sprintf(Message2SendToWeb, "POST /CurrentData/%f,%f,%ld HTTP/1.1\r\nHost: %s\r\nContent-Type: text/plain\r\n\r\n", SensorObj.getTemperature(), SensorObj.getHumidity(), TimeStamp, HOST_IP);
 	
-        // Send to server
-        if(SendMessageToWeb(Message2SendToWeb) < 0) {
-		printf("Error handling socket");
- 	}
+        // POST message to web-server
+        if(SendMessageToWeb(Message2SendToWeb) < 0){printf("Error handling socket");}
 	
-        // Storage into file
+        // Storage measure into log-file
         FILE *fp;
-
-    	// Full path to log file
-    	sprintf(FullPathToFile, "%s/%s",PATH_TO_EXT_DISK,filename);
-
-    	// Write data
     	fp = fopen(FullPathToFile,"a");
     	fprintf(fp,"%f,%f,%ld,%s",SensorObj.getTemperature(), SensorObj.getHumidity(), TimeStamp, ctime(&TimeStamp));
 	fclose(fp);
 
+	// Log measure in console
+	printf("Date:%sTemperature: %f [C] Humidity: %f [%s] \n",ctime(&TimeStamp), SensorObj.getTemperature(), SensorObj.getHumidity(), "%");
+        printf("\n");
      }
 
      //Wait 5 seconds

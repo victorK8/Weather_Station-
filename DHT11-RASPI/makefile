@@ -8,7 +8,7 @@ INCLUDE_DIR = include
 SRC_DIR = src
 
 # Flags to compiler
-CFLAGS = -Wall -I$(INCLUDE_DIR)  -lwiringPi
+CFLAGS = -I$(INCLUDE_DIR)  -lwiringPi
 
 # Header dependencies
 DEPS = $(INCLUDE_DIR)/dht11.h
