@@ -24,10 +24,13 @@
         color: black;
     }
 
-    div.downloadinput{
+    div.InputAsCalendar{
       padding-left: 150px;  
-     }
+    }
 
+    div.InputAsRadioButton{
+      padding-left: 500px;
+    }
 
     body {margin:0;}
 
@@ -80,17 +83,43 @@
   <!-- Download menu  -->
   <div id="menu" class="download-menu"> 
 
-    <div id="first-date" class="downloadinput">
+    <div id="first-date" class="InputAsCalendar">
       <label for="start">Init date:</label>
       <input type="date" id="init-date-input" name="trip-start" value="2020-04-20"  min="2020-01-01" max="2020-04-26">
     </div>
 
     <br></br>
 
-    <div id="last-date" class="downloadinput">
+    <div id="last-date" class="InputAsCalendar">
       <label for="end">Last date:</label>
       <input type="date" id="end-date-input" name="trip-start" value="2020-04-25"  min="2020-01-01" max="2020-04-26">
     </div>
+
+    <div id="radio-buttons-measures" class="InputAsRadioButton">
+      <p> Select measure or measures to download: </p>
+
+      <input type="checkbox" id="temp-button" name="Temperature" value="Temperature">
+      <label for="temp-button">Only Temperature</label>
+
+      <input type="checkbox" id="hum-button" name="Humidity" value="Humidity">
+      <label for="hum-button">Only Humidity</label>
+
+    </div>
+
+    <div id="radio-buttons-format" class="InputAsRadioButton">
+      <p> Select format or formats to download: </p>
+
+      <input type="checkbox" id="csv-button" name="csv" value="csv">
+      <label for="csv-button">CSV Format</label>
+
+      <input type="checkbox" id="js-button" name="js" value="js">
+      <label for="js-button">JSON Format</label>
+
+    </div>
+
+
+
+    
 
   </div>
 
