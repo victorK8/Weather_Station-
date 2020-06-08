@@ -6,9 +6,9 @@
   <!-- Title of web -->
   <title> Weather Station </title>
 
-  <!-- Refreh -->
-  <meta http-equiv="refresh" content="50">    
-   
+  <!-- Add jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
   <!-- CSS script to set style -->
   <style>
 
@@ -97,6 +97,22 @@
             <li><a href="music.html">Music</a></li>
             <li><a href="about.html">About</a></li>
     </ul>
+
+    <!-- Refresh web page with ajax -->
+    <script>
+      /***** Refresh function ******/
+      function IndexRefresh(){
+        // Refresh 
+        location.reload();
+        // Log it
+        console.log(" Index reloaded \n");
+      }
+
+      // Execute refresh function each 4 seconds
+      const RefreshTimeInMiliseconds = 4000;
+      setInterval(IndexRefresh, RefreshTimeInMiliseconds);     
+
+    </script>
               
 </body>
 
