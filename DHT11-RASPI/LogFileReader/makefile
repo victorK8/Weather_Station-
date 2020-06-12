@@ -21,4 +21,4 @@ EXE = test
 
 # Make it!
 $(EXE): $(SRC)
-	$(CC) -o $(EXE) $(CFLAGS)$(DEPS) $(SRC)
+	$(CC) -o $(EXE) $(CFLAGS)$(INCLUDE_PATH) $(SRC)

@@ -2,30 +2,44 @@
 ****************** a log files of weather station *************
 ****************** By Victor Malumbres ************************/
 
+#include <LogFileReader.h>
 
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
+// ****** Functions ******
 
-// ******** Variables ********
+// Get the lines of log file
+int GetNumberOfLinesOfFile(char* Filename){
+    FILE *fileptr;
 
-// Struct for reading rows of log_file
-struct Row{
-  double temperature;
-  double humidity;
-  char *timestamp;
-  char *date;
-};
+    int count_lines = 0;
 
-// Path to a Log_File example
-const char LogFileExample[] = "/media/DISK_1TB/Log_Files/RaspiOfMalum-1591623748.csv";
-// ********* Functions ********
+    fileptr = fopen(Filename, "r");
+
+   //extract character from file and store in chr
+
+    char chr = getc(fileptr);
+
+    while (chr != EOF){
+        //Count whenever new line is encountered
+        if (chr == 'n'){
+            count_lines = count_lines + 1;
+        }
+        //take next character from file.
+        chr = getc(fileptr);
+    }
+
+    fclose(fileptr); //close file.
+    return count_lines;
+}
 
 
-// ******** App **************
+int ConvertLineFromStringToStruct(){return 0;}
+int CalculateAverageValues(){return 0;}
+int CalculateStdValues(){return 0;}
+int CalculateMedianValues(){return 0;}
+int WriteStatisticFile(){return 0;}
 
+
+/*
 int main(void){
   	
     // Open file in reading mode
@@ -53,3 +67,4 @@ int main(void){
     return 0;
 
 }
+*/

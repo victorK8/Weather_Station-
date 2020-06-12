@@ -13,24 +13,21 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-// ****** Varaibles ******
-
-// Path To Log File
-char PathToLogFile[] = "/media/DISK_1TB/Log_Files/RaspiOfMalum-1591623748.csv";
+// ****** Variables ******
 
 // Struct for stastic value of temperature
 struct TemperatureSts{
   double average;
   double deviation;
   double median;
-}
+};
 
 // Struct for stastic value of humidity
 struct HumiditySts{
   double average;
   double deviation;
   double median;
-}
+};
 
 
 // Struct that represent a line of the file
@@ -42,20 +39,12 @@ struct Line{
 };
 
 
-
 // ****** Functions ******
-int GetNumberOfLinesOfFile();
+int GetNumberOfLinesOfFile(char* Filename);
 int ConvertLineFromStringToStruct();
 int CalculateAverageValues();
 int CalculateStdValues();
 int CalculateMedianValues();
 int WriteStatisticFile();
-
-
-
-
-
-
-
 
 #endif

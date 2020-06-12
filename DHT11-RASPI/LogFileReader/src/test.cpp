@@ -3,53 +3,20 @@
 ****************** By Victor Malumbres ************************/
 
 
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include <LogFileReader.h>
 
 // ******** Variables ********
 
-// Struct for reading rows of log_file
-struct Row{
-  double temperature;
-  double humidity;
-  char *timestamp;
-  char *date;
-};
-
 // Path to a Log_File example
-const char LogFileExample[] = "/media/DISK_1TB/Log_Files/RaspiOfMalum-1591623748.csv";
-// ********* Functions ********
-
+char LogFileExample[] = "/media/DISK_1TB/Log_Files/RaspiOfMalum-1591623748.csv";
 
 // ******** App **************
 
 int main(void){
-  	
-    // Open file in reading mode
-    FILE * fp;
-    fp = fopen(LogFileExample,"r");
- 
-    // Local vars for reading file line by line
-    char * Buffer;
-    size_t len = 0;
-    ssize_t read;
-    char * SplittedBuffer;
-	
-    // Read line by line
-    //while ((read = getline(&Buffer, &len, fp)) != -1) {
-        read = getline(&Buffer, &len, fp);
-        read = getline(&Buffer, &len, fp);
-	SplittedBuffer = strtok(Buffer,",");
-	printf(SplittedBuffer);
-    //}
 
-    // Close file
-    fclose(fp);
+   // Print number of lines of file
+   int NumberOfLines = GetNumberOfLinesOfFile(LogFileExample);
+   printf("%n lines in file", &NumberOfLines);
 
-
-    return 0;
-
+   return 0;
 }
