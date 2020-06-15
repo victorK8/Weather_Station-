@@ -175,7 +175,10 @@ int WriteStatisticFile(char *Filename){
    fp = fopen(NewFilename, "r");
 
    // Write statistics as json
-   fwrite(fp, "{\"Temperature\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": 0.0}, \"Humidity\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": 0.0}}", Temperature.Average, Temperature.Deviation,Humidity.Average, Humidity.Deviation);
-
-  return 0;
+   fwrite(fp, "{\"Temperature\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": 0.00}, \"Humidity\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": 0.00}}", Temperature.Average, Temperature.Deviation, Humidity.Average, Humidity.Deviation);
+   
+   // Close analysis file
+   fclose(fp);
+ 
+   return 0;
 }
