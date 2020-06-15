@@ -13,35 +13,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-// ****** Variables ******
-
-// Struct for stastic value of temperature
-struct TemperatureSts{
-  double average;
-  double deviation;
-  double median;
-};
-
-// Struct for stastic value of humidity
-struct HumiditySts{
-  double average;
-  double deviation;
-  double median;
-};
-
-
-// Struct that represent a line of the file
-struct Line{
-  double temperature;
-  double humidity;
-  char *timestamp;
-  char *date;
-};
-
 
 // ****** Functions ******
-int GetNumberOfLinesOfFile(char* Filename);
-int ConvertLineFromStringToStruct();
+int GetNumberOfLinesOfFile(char *Filename);
+int ConvertLineFromStringToStruct(char *line);
 int CalculateAverageValues();
 int CalculateStdValues();
 int CalculateMedianValues();

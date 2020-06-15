@@ -4,10 +4,35 @@
 
 #include <LogFileReader.h>
 
-// ****** Functions ******
+
+// Types
+ 
+// Struct for stastic values
+typedef struct Statistics{
+  double Average;
+  double Deviation;
+  double Median;
+};
+
+// Struct that represent a line of the file
+typedef struct DataOfALine{
+  double Temperature;
+  double Humidity;
+  char *Timestamp;
+  char *Date;
+};
+
+// Vars
+Statistics Temperature;
+Statistics Humidity;
+DataOfALine Line;
+
+
+
+// **** Functions ******
 
 // Get the lines of log file
-int GetNumberOfLinesOfFile(char* Filename){
+int GetNumberOfLinesOfFile(char *Filename){
 
     // Local vars
     FILE *fp;
@@ -31,8 +56,28 @@ int GetNumberOfLinesOfFile(char* Filename){
     return NumberOfLines;
 }
 
+// Convert a csv format string to struct
+int ConvertLineFromStringToStruct(char *line){
 
-int ConvertLineFromStringToStruct(){return 0;}
+  // Local vars
+  char *ParsedLine;
+   
+  // Get first element (Temperature) and put into struct
+  ParsedLine = strtok(line,",");
+  Line.Temperature = atof(ParsedLine);
+
+  // Print struct
+  printf("**** Data of line **** Â\n");
+  printf("Temperature: %lf Âª\n", Line.Temperature);
+  printf("Humidity: %lf   \n", Line.Humidity);
+  printf("TimeStamp: %s \n", Line.Timestamp);
+  printf("Date: %s \n", Line.Date);
+  printf("**** End of line **** \n");
+
+  return 0;
+}
+
+
 int CalculateAverageValues(){return 0;}
 int CalculateStdValues(){return 0;}
 int CalculateMedianValues(){return 0;}
