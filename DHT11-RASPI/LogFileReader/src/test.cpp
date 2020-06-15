@@ -8,7 +8,7 @@
 // ******** Variables ********
 
 // Path to a Log_File example
-char LogFileExample[] = "/media/DISK_1TB/Log_Files/RaspiOfMalum-1591623748.csv";
+char LogFileExample[] = "/media/DISK_1TB/Log_Files/RaspiOfMalum_1591623748.csv";
 
 // String as csv format to test library
 char ExampleLine[] = "24.000000,44.000000,1591623751,Mon Jun  8 15:42:31 2020";

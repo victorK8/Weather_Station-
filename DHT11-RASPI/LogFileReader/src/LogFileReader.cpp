@@ -101,13 +101,6 @@ int ConvertLineFromStringToStruct(char *line){
 // Create a statistic file with average, deviation and median per file
 int WriteStatisticFile(char *Filename){
 
-   // Filename handling Local vars
-   // NewFilename is like "....../RaspiOfMalum_[Timestamp]_Analysis.csv"  
-   char ExtensionOfLogFile[] = ".csv";
-   char *NewFilename = strtok(Filename,ExtensionOfLogFile);
-   strcat(NewFilename, "_Analysis.json");
-   
-
    // Read Line by line
    FILE *fp;
    char * Buffer;
@@ -159,6 +152,9 @@ int WriteStatisticFile(char *Filename){
    // Divide average values by number of lines counter
    Temperature.Deviation = sqrt(Temperature.Deviation/(NumberOfLines-1));
    Humidity.Deviation = sqrt(Humidity.Deviation/(NumberOfLines-1));
+    
+   // Close Log File
+   fclose(fp);
 
    // Print (Uncomment for debug)
    printf("**** Statistics **** \n");
@@ -168,17 +164,37 @@ int WriteStatisticFile(char *Filename){
    printf("Deviation of Humidity: %lf \n", Humidity.Deviation);
    printf("**** End **** \n");
 
-   // Close Log File
-   fclose(fp);
+
+
+
+   // Filename handling Local vars
+   // NewFilename is like "....../RaspiOfMalum_[Timestamp]_Analysis.csv"
+   char *NewFilename;
+   char *OnlyNewName;
+
+   printf("\n");
+   printf("Old Path: %s \n", Filename);
+   
+   // Quit filename
+   NewFilename = strtok(Filename,".csv");
+  
+   // Add new suffix adn json extension
+   sprintf(OnlyNewName, "RaspiofMalum_Analytics_%ld.json",Line.Timestamp);
+   strcat(NewFilename,OnlyNewName);
+
+   printf("\n"); 
+   printf("New Path: %s \n", NewFilename);
+
+   FILE *fp2;
 
    // Open analysis file
-   fp = fopen(NewFilename, "r");
+   fp2 = fopen(NewFilename, "w");
 
    // Write statistics as json
-   fwrite(fp, "{\"Temperature\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": 0.00}, \"Humidity\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": 0.00}}", Temperature.Average, Temperature.Deviation, Humidity.Average, Humidity.Deviation);
+   fprintf(fp2, "{\"LineTimestamp\":%ld, \"Temperature\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": 0.00}, \"Humidity\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": 0.00}}", Line.Timestamp, Temperature.Average, Temperature.Deviation, Humidity.Average, Humidity.Deviation);
    
    // Close analysis file
-   fclose(fp);
+   fclose(fp2);
  
    return 0;
 }
