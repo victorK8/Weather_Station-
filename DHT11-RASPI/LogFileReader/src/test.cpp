@@ -16,7 +16,7 @@ int main(void){
 
    // Print number of lines of file
    int NumberOfLines = GetNumberOfLinesOfFile(LogFileExample);
-   printf("%n lines in file", &NumberOfLines);
+   printf("%d lines in file \n ", NumberOfLines);
 
    return 0;
 }

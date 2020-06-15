@@ -8,27 +8,27 @@
 
 // Get the lines of log file
 int GetNumberOfLinesOfFile(char* Filename){
-    FILE *fileptr;
 
-    int count_lines = 0;
+    // Local vars
+    FILE *fp;
+    int NumberOfLines = 0;
+    char * Buffer;
+    size_t len = 0;
+    ssize_t read;
 
-    fileptr = fopen(Filename, "r");
+    // Open File
+    fp = fopen(Filename, "r");
 
-   //extract character from file and store in chr
-
-    char chr = getc(fileptr);
-
-    while (chr != EOF){
-        //Count whenever new line is encountered
-        if (chr == 'n'){
-            count_lines = count_lines + 1;
-        }
-        //take next character from file.
-        chr = getc(fileptr);
+    // Read line by line, and count lines
+    while ((read = getline(&Buffer, &len, fp)) != -1) {
+       NumberOfLines ++;
     }
 
-    fclose(fileptr); //close file.
-    return count_lines;
+    // Close File
+    fclose(fp); 
+
+
+    return NumberOfLines;
 }
 
 
