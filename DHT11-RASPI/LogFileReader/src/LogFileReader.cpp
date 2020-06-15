@@ -4,7 +4,7 @@
 
 #include <LogFileReader.h>
 #define MAX_SIZE 100
-
+#define MAX_SIZE_FOR_PATH 500
 // Types
  
 // Struct for stastic values
@@ -98,8 +98,56 @@ int ConvertLineFromStringToStruct(char *line){
   return 0;
 }
 
+// Create a statistic file with average, deviation and median per file
+int WriteStatisticFile(char *Filename){
 
-int CalculateAverageValues(){return 0;}
-int CalculateStdValues(){return 0;}
-int CalculateMedianValues(){return 0;}
-int WriteStatisticFile(){return 0;}
+   //Local vars  
+   char StaticsHead[] = "Stats";
+   char NewFilename[MAX_SIZE_FOR_PATH];
+  
+   // Read Line by line
+   FILE *fp;
+   char * Buffer;
+   size_t len = 0;   
+   ssize_t read;
+
+   int NumberOfLines = 0;
+
+   // Open File
+   fp = fopen(Filename, "r");
+
+
+   // Loop for average calculation
+   // Read line by line. Counting lines and accumulating value for avg and deviation
+   while ((read = getline(&Buffer, &len, fp)) != -1) {
+
+      // Convert to struct line
+      if(ConvertLineFromStringToStruct(ExampleLine) != ){return -1;}
+ 
+      // Increment statistics for temperature
+      Temperature.Average += Line.Temperature;
+
+      // Increment statistics for humidity
+      Humidity.Average += Line.Temperature;
+      
+      // Increment counter of lines
+      NumberOfLines ++;
+   }
+
+   // Divide average values by number of lines counter
+   Temperature.Average = Temperature.Average/NumberOfLines;
+   Humidity.Average = Humidity.Average/NumberOfLines;
+
+
+   // Print (Uncomment for debug)
+   printf("**** Statistics **** \n");
+   printf("Average Temperature: %lf \n", Temperature.Average);
+   printf("Average Humidity: %lf \n", Humidity.Average);
+   printf("**** End ****");ç
+
+
+   // Close File
+   fclose(fp);
+
+  return 0;
+}

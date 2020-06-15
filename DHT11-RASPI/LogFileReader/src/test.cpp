@@ -27,5 +27,12 @@ int main(void){
    // Check parser of csv line. Print struct Line
    int ResultFlag = ConvertLineFromStringToStruct(ExampleLine);
 
+   printf(" \n");
+   printf(" \n");
+
+   // Create statistics file
+   int ResultFlag_2 = WriteStatisticFile(LogFileExample);
+
+
    return 0;
 }

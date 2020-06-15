@@ -17,9 +17,6 @@
 // ****** Functions ******
 int GetNumberOfLinesOfFile(char *Filename);
 int ConvertLineFromStringToStruct(char *line);
-int CalculateAverageValues();
-int CalculateStdValues();
-int CalculateMedianValues();
-int WriteStatisticFile();
+int WriteStatisticFile(char *Filename);
 
 #endif
