@@ -122,7 +122,7 @@ int WriteStatisticFile(char *Filename){
    while ((read = getline(&Buffer, &len, fp)) != -1) {
 
       // Convert to struct line
-      if(ConvertLineFromStringToStruct(ExampleLine) != ){return -1;}
+      if(ConvertLineFromStringToStruct(Buffer) != 0 ){return -1;}
  
       // Increment statistics for temperature
       Temperature.Average += Line.Temperature;
