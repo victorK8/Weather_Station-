@@ -88,12 +88,12 @@ int ConvertLineFromStringToStruct(char *line){
   }
 
   // Print struct (uncomment for debug)
-  printf("**** Data of line ****\n");
-  printf("Temperature: %lf \n", Line.Temperature);
-  printf("Humidity: %lf \n", Line.Humidity);
-  printf("TimeStamp: %ld \n", Line.Timestamp);
-  printf("Date: %s \n", Line.Date);
-  printf("**** End of line **** \n");
+  //printf("**** Data of line ****\n");
+  //printf("Temperature: %lf \n", Line.Temperature);
+  //printf("Humidity: %lf \n", Line.Humidity);
+  //printf("TimeStamp: %ld \n", Line.Timestamp);
+  //printf("Date: %s \n", Line.Date);
+  //printf("**** End of line **** \n");
 
   return 0;
 }
@@ -143,7 +143,7 @@ int WriteStatisticFile(char *Filename){
    printf("**** Statistics **** \n");
    printf("Average Temperature: %lf \n", Temperature.Average);
    printf("Average Humidity: %lf \n", Humidity.Average);
-   printf("**** End ****");ç
+   printf("**** End ****");
 
 
    // Close File
