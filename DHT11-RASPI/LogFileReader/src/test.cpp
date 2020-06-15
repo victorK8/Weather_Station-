@@ -21,8 +21,8 @@ int main(void){
    int NumberOfLines = GetNumberOfLinesOfFile(LogFileExample);
    printf("%d lines in file \n ", NumberOfLines);
 
-   printf(" --- \n");
-   printf(" --- \n");ç
+   printf(" \n");
+   printf(" \n");
 
    // Check parser of csv line. Print struct Line
    int ResultFlag = ConvertLineFromStringToStruct(ExampleLine);
