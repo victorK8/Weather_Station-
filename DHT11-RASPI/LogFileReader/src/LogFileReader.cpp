@@ -3,7 +3,7 @@
 ****************** By Victor Malumbres ************************/
 
 #include <LogFileReader.h>
-
+#define MAX_SIZE 100
 
 // Types
  
@@ -18,8 +18,8 @@ typedef struct Statistics{
 typedef struct DataOfALine{
   double Temperature;
   double Humidity;
-  char *Timestamp;
-  char *Date;
+  long int Timestamp;
+  char Date[MAX_SIZE];
 };
 
 // Vars
@@ -61,17 +61,38 @@ int ConvertLineFromStringToStruct(char *line){
 
   // Local vars
   char *ParsedLine;
-   
+  int ItemCounter = 0;
+  const int NumberOfItems = 4;
+
   // Get first element (Temperature) and put into struct
   ParsedLine = strtok(line,",");
   Line.Temperature = atof(ParsedLine);
+  ItemCounter ++;
+  
+  // Loop for the rest of items
+  while(ItemCounter<NumberOfItems){
+     // Get Item
+     ParsedLine = strtok(NULL,",");
+   
+     // Put value of specific item
+     if(ItemCounter == 1){
+     	Line.Humidity = atof(ParsedLine);
+     }else if(ItemCounter == 2){
+        Line.Timestamp = atol(ParsedLine);
+     }else if(ItemCounter == 3){
+        strcpy(Line.Date, ParsedLine);
+     }
 
-  // Print struct
+     // increment counter of items
+     ItemCounter ++;
+  }
+
+  // Print struct (uncomment for debug)
   printf("**** Data of line ****\n");
-  printf("  Temperature: %lf \n", Line.Temperature);
-  printf("  Humidity: %lf \n", Line.Humidity);
-  printf("  TimeStamp: %s \n", Line.Timestamp);
-  printf("  Date: %s \n", Line.Date);
+  printf("Temperature: %lf \n", Line.Temperature);
+  printf("Humidity: %lf \n", Line.Humidity);
+  printf("TimeStamp: %ld \n", Line.Timestamp);
+  printf("Date: %s \n", Line.Date);
   printf("**** End of line **** \n");
 
   return 0;
@@ -82,34 +103,3 @@ int CalculateAverageValues(){return 0;}
 int CalculateStdValues(){return 0;}
 int CalculateMedianValues(){return 0;}
 int WriteStatisticFile(){return 0;}
-
-
-/*
-int main(void){
-  	
-    // Open file in reading mode
-    FILE * fp;
-    fp = fopen(LogFileExample,"r");
- 
-    // Local vars for reading file line by line
-    char * Buffer;
-    size_t len = 0;
-    ssize_t read;
-    char * SplittedBuffer;
-	
-    // Read line by line
-    //while ((read = getline(&Buffer, &len, fp)) != -1) {
-        read = getline(&Buffer, &len, fp);
-        read = getline(&Buffer, &len, fp);
-	SplittedBuffer = strtok(Buffer,",");
-	printf(SplittedBuffer);
-    //}
-
-    // Close file
-    fclose(fp);
-
-
-    return 0;
-
-}
-*/
