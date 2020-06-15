@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 // ****** Functions ******
 int GetNumberOfLinesOfFile(char *Filename);

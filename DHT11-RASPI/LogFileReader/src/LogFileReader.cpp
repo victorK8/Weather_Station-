@@ -101,10 +101,13 @@ int ConvertLineFromStringToStruct(char *line){
 // Create a statistic file with average, deviation and median per file
 int WriteStatisticFile(char *Filename){
 
-   //Local vars  
-   char StaticsHead[] = "Stats";
-   char NewFilename[MAX_SIZE_FOR_PATH];
-  
+   // Filename handling Local vars
+   // NewFilename is like "....../RaspiOfMalum_[Timestamp]_Analysis.csv"  
+   char ExtensionOfLogFile[] = ".csv";
+   char *NewFilename = strtok(Filename,ExtensionOfLogFile);
+   strcat(NewFilename, "_Analysis.json");
+   
+
    // Read Line by line
    FILE *fp;
    char * Buffer;
@@ -113,7 +116,7 @@ int WriteStatisticFile(char *Filename){
 
    int NumberOfLines = 0;
 
-   // Open File
+   // Open Log File
    fp = fopen(Filename, "r");
 
 
@@ -128,7 +131,7 @@ int WriteStatisticFile(char *Filename){
       Temperature.Average += Line.Temperature;
 
       // Increment statistics for humidity
-      Humidity.Average += Line.Temperature;
+      Humidity.Average += Line.Humidity;
       
       // Increment counter of lines
       NumberOfLines ++;
@@ -138,16 +141,41 @@ int WriteStatisticFile(char *Filename){
    Temperature.Average = Temperature.Average/NumberOfLines;
    Humidity.Average = Humidity.Average/NumberOfLines;
 
+   // Loop for deviation calculation
+   // Read line by line. Counting lines and accumulating value for avg and deviation
+   while ((read = getline(&Buffer, &len, fp)) != -1) {
+
+      // Convert to struct line
+      if(ConvertLineFromStringToStruct(Buffer) != 0 ){return -1;}
+
+      // Increment statistics for temperature
+      Temperature.Deviation += (Line.Temperature - Temperature.Average)*(Line.Temperature - Temperature.Average);
+
+      // Increment statistics for humidity
+      Humidity.Deviation += (Line.Humidity - Humidity.Average)*(Line.Humidity - Humidity.Average);
+
+   }
+
+   // Divide average values by number of lines counter
+   Temperature.Deviation = sqrt(Temperature.Deviation/(NumberOfLines-1));
+   Humidity.Deviation = sqrt(Humidity.Deviation/(NumberOfLines-1));
 
    // Print (Uncomment for debug)
    printf("**** Statistics **** \n");
-   printf("Average Temperature: %lf \n", Temperature.Average);
-   printf("Average Humidity: %lf \n", Humidity.Average);
-   printf("**** End ****");
+   printf("Average of Temperature: %lf \n", Temperature.Average);
+   printf("Average of Humidity: %lf \n", Humidity.Average);
+   printf("Deviation of Temperature: %lf \n", Temperature.Deviation);
+   printf("Deviation of Humidity: %lf \n", Humidity.Deviation);
+   printf("**** End **** \n");
 
-
-   // Close File
+   // Close Log File
    fclose(fp);
+
+   // Open analysis file
+   fp = fopen(NewFilename, "r");
+
+   // Write statistics as json
+   fwrite(fp, "{\"Temperature\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": 0.0}, \"Humidity\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": 0.0}}", Temperature.Average, Temperature.Deviation,Humidity.Average, Humidity.Deviation);
 
   return 0;
 }
