@@ -3,8 +3,10 @@
 ****************** By Victor Malumbres ************************/
 
 #include <LogFileReader.h>
+
 #define MAX_SIZE 100
 #define MAX_SIZE_FOR_PATH 500
+
 // Types
  
 // Struct for stastic values
@@ -101,6 +103,18 @@ int ConvertLineFromStringToStruct(char *line){
 
   return 0;
 }
+
+// function used to calculate median
+int compare(const void *_a, const void *_b) {
+ 
+        int *a, *b;
+        
+        a = (int *) _a;
+        b = (int *) _b;
+        
+        return (*a - *b);
+}
+
 
 // Create a statistic file with average, deviation and median per file
 int WriteStatisticFile(char *Filename){
@@ -201,9 +215,37 @@ int WriteStatisticFile(char *Filename){
       
       LoopCounter ++;
    }
+   
+   fclose(fp);
+   fp = fopen(Filename, "r");
+
    // Loop for median calculation
-   // Need to implement   
- 
+   LoopCounter = 0;
+
+   double TemperatureSorted[NumberOfLines];
+   double HumiditySorted[NumberOfLines];
+   
+   // Fill Arrays
+   while ((read = getline(&Buffer, &len, fp)) != -1) {
+      // Convert to struct line
+      if(ConvertLineFromStringToStruct(Buffer) != 0 ){return -1;}
+      
+      // Storage
+      TemperatureSorted[LoopCounter] = Line.Temperature;
+      HumiditySorted[LoopCounter] = Line.Humidity;
+   
+      // Increment counter index
+      LoopCounter ++;
+   }
+   
+   // Sort arrays 
+   qsort(TemperatureSorted,NumberOfLines, sizeof(double),&compare);
+   qsort(HumiditySorted,NumberOfLines, sizeof(double),&compare);
+    
+   // Take middle of array (It's the median)
+   Temperature.Median = TemperatureSorted[NumberOfLines/2];
+   Humidity.Median = HumiditySorted[NumberOfLines/2];   
+
    // Close Log File
    fclose(fp);
 
