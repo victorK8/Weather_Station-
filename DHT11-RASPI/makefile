@@ -7,14 +7,14 @@ INCLUDE_DIR = include
 # Source Code Path
 SRC_DIR = src
 
-# Flags to compiler
-CFLAGS = -I$(INCLUDE_DIR)  -lwiringPi
+# LogFileReader Header Path
+LIB_PATH = LogFileReader
 
-# Header dependencies
-DEPS = $(INCLUDE_DIR)/dht11.h
+# Flags to compiler
+CFLAGS = -I$(INCLUDE_DIR) -I$(LIB_PATH)/include  -lwiringPi
 
 # Files to compile
-SRCS =  $(SRC_DIR)/dht11.cpp $(SRC_DIR)/main.cpp
+SRCS =  $(LIB_PATH)/src/LogFileReader.cpp $(SRC_DIR)/dht11.cpp $(SRC_DIR)/main.cpp
 
 # EXE NAME
 EXE = run
