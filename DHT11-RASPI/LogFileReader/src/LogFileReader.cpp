@@ -158,36 +158,42 @@ int WriteStatisticFile(char *Filename){
    Humidity.Deviation = sqrt(Humidity.Deviation/(NumberOfLines-1));
  
    // Loop for maximum, minumin and max_time, min_time
-   // Init max and min values
-   Temperature.Maximum = 0.0;
-   Humidity.Maximum = 0.0;
-   Temperature.Minimum = 1000.0;
-   Humidity.Minimum = 1000.0;
+   int LoopCounter = 0;
 
    while ((read = getline(&Buffer, &len, fp)) != -1) {
-      // Convert to struct line
-      if(ConvertLineFromStringToStruct(Buffer) != 0 ) return -1;
-    
-      // For temperature
-      if(Line.Temperature > Temperature.Maximum){
-        Temperature.Maximum = Line.Temperature;
-        Temperature.Max_Time = Line.Timestamp;	
-      }
-      if(Line.Temperature < Temperature.Minimum){
-        Temperature.Minimum = Line.Temperature;
-        Temperature.Min_Time = Line.Timestamp;
-      }
 
-      // For humidity
-      if(Line.Humidity > Humidity.Maximum){
-        Humidity.Maximum = Line.Humidity;
-        Humidity.Max_Time = Line.Timestamp;
-      }
-      if(Line.Humidity < Humidity.Minimum){
-        Humidity.Minimum = Line.Humidity;
-        Humidity.Min_Time = Line.Timestamp;
-      }
- 
+      // Convert to struct line
+      if(ConvertLineFromStringToStruct(Buffer) != 0 ){return -1;}
+      
+      if(LoopCounter != 0){    
+      	// For temperature
+      	if(Line.Temperature > Temperature.Maximum){
+          Temperature.Maximum = Line.Temperature;
+          Temperature.Max_Time = Line.Timestamp;	
+      	}
+      	if(Line.Temperature < Temperature.Minimum){
+          Temperature.Minimum = Line.Temperature;
+          Temperature.Min_Time = Line.Timestamp;
+      	}
+
+      	// For humidity
+      	if(Line.Humidity > Humidity.Maximum){
+          Humidity.Maximum = Line.Humidity;
+          Humidity.Max_Time = Line.Timestamp;
+      	}
+      	if(Line.Humidity < Humidity.Minimum){
+          Humidity.Minimum = Line.Humidity;
+          Humidity.Min_Time = Line.Timestamp;
+      	}
+       }else{
+	  // Init max and min values
+          Temperature.Maximum = Line.Temperature;
+          Temperature.Minimum = Line.Temperature;
+          Humidity.Maximum = Line.Humidity;
+          Humidity.Minimum = Line.Humidity;
+	}
+      
+      LoopCounter ++;
    }
    // Loop for median calculation
    // Need to implement   
