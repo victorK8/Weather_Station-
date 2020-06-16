@@ -173,30 +173,30 @@ int WriteStatisticFile(char *Filename){
       
       if(LoopCounter != 0){    
       	// For temperature
-      	if(Line.Temperature > Temperature.Maximum){
+      	if(Line.Temperature >= Temperature.Maximum){
           Temperature.Maximum = Line.Temperature;
           Temperature.Max_Time = Line.Timestamp;	
       	}
-      	if(Line.Temperature < Temperature.Minimum){
+      	if(Line.Temperature <= Temperature.Minimum){
           Temperature.Minimum = Line.Temperature;
           Temperature.Min_Time = Line.Timestamp;
       	}
 
       	// For humidity
-      	if(Line.Humidity > Humidity.Maximum){
+      	if(Line.Humidity >= Humidity.Maximum){
           Humidity.Maximum = Line.Humidity;
           Humidity.Max_Time = Line.Timestamp;
       	}
-      	if(Line.Humidity < Humidity.Minimum){
+      	if(Line.Humidity <= Humidity.Minimum){
           Humidity.Minimum = Line.Humidity;
           Humidity.Min_Time = Line.Timestamp;
       	}
        }else{
 	  // Init max and min values
-          Temperature.Maximum = Line.Temperature;
-          Temperature.Minimum = Line.Temperature;
-          Humidity.Maximum = Line.Humidity;
-          Humidity.Minimum = Line.Humidity;
+          Temperature.Maximum = 0.0;
+          Temperature.Minimum = 80.0;
+          Humidity.Maximum = 0.0;
+          Humidity.Minimum = 105.0;
 	}
       
       LoopCounter ++;

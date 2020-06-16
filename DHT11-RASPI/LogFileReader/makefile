@@ -2,7 +2,7 @@
 CC = g++
 
 # Compiler flags
-CFLAGS = -Wall -I
+CFLAGS = -Wall -g -I
 
 # Path of header files
 INCLUDE_PATH = include
