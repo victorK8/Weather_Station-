@@ -137,6 +137,9 @@ int WriteStatisticFile(char *Filename){
    // Divide average values by number of lines counter
    Temperature.Average = Temperature.Average/NumberOfLines;
    Humidity.Average = Humidity.Average/NumberOfLines;
+	
+   fclose(fp);
+   fp = fopen(Filename, "r");
 
    // Loop for deviation calculation
    // Read line by line. Counting lines and accumulating value for avg and deviation
@@ -156,6 +159,9 @@ int WriteStatisticFile(char *Filename){
    // Divide average values by number of lines counter
    Temperature.Deviation = sqrt(Temperature.Deviation/(NumberOfLines-1));
    Humidity.Deviation = sqrt(Humidity.Deviation/(NumberOfLines-1));
+	
+   fclose(fp);
+   fp = fopen(Filename, "r");
  
    // Loop for maximum, minumin and max_time, min_time
    int LoopCounter = 0;
