@@ -11,6 +11,10 @@
 typedef struct Statistics{
   double Average;
   double Deviation;
+  double Maximum;
+  double Minimum;
+  long int Max_Time;
+  long int Min_Time;
   double Median;
 };
 
@@ -153,6 +157,38 @@ int WriteStatisticFile(char *Filename){
    Temperature.Deviation = sqrt(Temperature.Deviation/(NumberOfLines-1));
    Humidity.Deviation = sqrt(Humidity.Deviation/(NumberOfLines-1));
  
+   // Loop for maximum, minumin and max_time, min_time
+   // Init max and min values
+   Temperature.Maximum = 0.0;
+   Humidity.Maximum = 0.0;
+   Temperature.Minimum = 1000.0;
+   Humidity.Minimum = 1000.0;
+
+   while ((read = getline(&Buffer, &len, fp)) != -1) {
+      // Convert to struct line
+      if(ConvertLineFromStringToStruct(Buffer) != 0 ) return -1;
+    
+      // For temperature
+      if(Line.Temperature > Temperature.Maximum){
+        Temperature.Maximum = Line.Temperature;
+        Temperature.Max_Time = Line.Timestamp;	
+      }
+      if(Line.Temperature < Temperature.Minimum){
+        Temperature.Minimum = Line.Temperature;
+        Temperature.Min_Time = Line.Timestamp;
+      }
+
+      // For humidity
+      if(Line.Humidity > Humidity.Maximum){
+        Humidity.Maximum = Line.Humidity;
+        Humidity.Max_Time = Line.Timestamp;
+      }
+      if(Line.Humidity < Humidity.Minimum){
+        Humidity.Minimum = Line.Humidity;
+        Humidity.Min_Time = Line.Timestamp;
+      }
+ 
+   }
    // Loop for median calculation
    // Need to implement   
  
@@ -167,6 +203,10 @@ int WriteStatisticFile(char *Filename){
    printf("Deviation of Humidity: %lf \n", Humidity.Deviation);
    printf("Median of Temperature: %lf \n", Temperature.Median);
    printf("Median of Humidity: %lf \n", Humidity.Median);
+   printf("Max. of Temperature: %lf at %ld stamp \n", Temperature.Maximum, Temperature.Max_Time);
+   printf("Max. of Humidity: %lf at %ld stamp \n", Humidity.Maximum, Humidity.Max_Time);
+   printf("Min. of Temperature: %lf at %ld stamp \n", Temperature.Minimum, Temperature.Min_Time);
+   printf("Min. of Humidity: %lf at %ld stamp \n", Humidity.Minimum, Humidity.Min_Time);
    printf("**** End **** \n");
 
 
@@ -199,7 +239,7 @@ int WriteStatisticFile(char *Filename){
    fp2 = fopen(NewFilename, "w");
 
    // Write statistics as json
-   fprintf(fp2, "{\"LineTimestamp\":%ld, \"Temperature\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": %lf}, \"Humidity\":{\"Average\": %lf, \"Deviation\": %lf, \"Median\": %lf}}", Line.Timestamp, Temperature.Average, Temperature.Deviation, Temperature.Median, Humidity.Average, Humidity.Deviation, Humidity.Deviation);
+   fprintf(fp2, "{\"LineTimestamp\":%ld, \"Temperature\":{\"Average\": %lf, \"Deviation\": %lf, \"Max\": %lf, \"MaxStamp\": %ld, \"Min\": %lf, \"MinStamp\": %ld, \"Median\": %lf}, \"Humidity\":{\"Average\": %lf, \"Deviation\": %lf, \"Max\": %lf, \"MaxStamp\": %ld, \"Min\": %lf, \"MinStamp\": %ld,\"Median\": %lf}}", Line.Timestamp, Temperature.Average, Temperature.Deviation,Temperature.Maximum,Temperature.Max_Time,Temperature.Minimum,Temperature.Min_Time, Temperature.Median, Humidity.Average, Humidity.Deviation, Humidity.Maximum, Humidity.Max_Time, Humidity.Minimum, Humidity.Min_Time, Humidity.Deviation);
    
    // Close analysis file
    fclose(fp2);

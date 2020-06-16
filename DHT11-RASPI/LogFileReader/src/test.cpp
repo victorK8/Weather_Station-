@@ -18,7 +18,7 @@ char ExampleLine[] = "24.000000,44.000000,1591623751,Mon Jun  8 15:42:31 2020";
 int main(void){
 
    // Check number of lines of file. Print number of lines of file
-   printf("Testing number of lines  ... ");
+   printf("Testing number of lines  ... \n");
    int NumberOfLines = GetNumberOfLinesOfFile(LogFileExample);
    printf("%d lines in file \n ", NumberOfLines);
 
@@ -26,7 +26,7 @@ int main(void){
    printf(" \n");
 
    // Create statistics file
-   printf("Testing write statistics file ....");
+   printf("Testing write statistics file .... \n");
    int ResultFlag_2 = WriteStatisticFile(LogFileExample);
 
 
