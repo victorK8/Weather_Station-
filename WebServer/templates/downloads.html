@@ -15,7 +15,7 @@
     #BackgroundStyle{
         background-image: url({{ url_for('static', filename='background_pic.jpg') }});
         background-repeat: no-repeat;
-        background-size: cover;    
+        background-size: cover;
         }
 
     #TextStyle {
@@ -28,13 +28,13 @@
     }
 
     div.InputAsCalendar{
-      padding-left: 150px;  
+      padding-left: 150px;
       padding-top: 10px;
       padding-bottom: 10px;
     }
 
     p.InputAsCalendar{
-      padding-left: 150px;  
+      padding-left: 150px;
       padding-top: 5px;
       padding-bottom: 5px;
     }
@@ -111,7 +111,7 @@
 
   <!-- Download menu  -->
 
-  <div id="menu" class="download-menu"> 
+  <div id="menu" class="download-menu">
 
     <!-- Calendar -->
     <div id="calendar">
@@ -139,7 +139,7 @@
       <label for="hum-button"> Humidity</label>
 
     </div>
-    
+
     <!-- download button -->
     <div id="download-button" class="InputAsDownloadButton">
       <button type="button" onclick="Download()">Download</button>
@@ -160,37 +160,45 @@
       };
 
       var MeasureToGet = "";
+      var LaunchRequest = false;
 
       if((RadioButton.Temperature===true) &&(RadioButton.Humidity===true)){
         MeasureToGet = "All";
+        LaunchRequest = true;
       }else if(RadioButton.Temperature===true){
         MeasureToGet = "Temperature";
+        LaunchRequest = true;
       }else if(RadioButton.Humidity===true){
         MeasureToGet = "Humidity";
+        LaunchRequest = true;
       }else{
         MeasureToGet = "None";
+        LaunchRequest = false;
       }
 
+      if(LaunchRequest === true){
+        // Request settings
+        var request_settings = {
+          Measure:MeasureToGet,
+          FirstDate:document.getElementById('init-date-input').value,
+          LastDate:document.getElementById('end-date-input').value
+        };
 
-      // Request settings
-      var request_settings = {
-        Measure:MeasureToGet,
-        FirstDate:document.getElementById('init-date-input').value,
-        LastDate:document.getElementById('end-date-input').value
-      };
-
-      console.log(request_settings);
-      // GET request to API
-      // Example URI: /Data/Historical?Measure=<value>&FirstDate=<value>&LastDate=<value>
-      var uri = '/Data/Historical?Measure=' + request_settings.Measure + '&FirstDate=' +  request_settings.FirstDate + '&LastDate=' + request_settings.LastDate;
-      $.get(uri, function(data, status){console.log(status);});
+        console.log(request_settings);
+        // GET request to API
+        // Example URI: /Data/Historical?Measure=<value>&FirstDate=<value>&LastDate=<value>
+        var uri = '/Data/Historical?Measure=' + request_settings.Measure + '&FirstDate=' +  request_settings.FirstDate + '&LastDate=' + request_settings.LastDate;
+        $.get(uri, function(data, status){console.log(status);});
+      }else{
+        alert("Check any measure to download, please!");
+      }
 
     }
 
 
   </script>
 
-              
+
 </body>
 
 </html>
