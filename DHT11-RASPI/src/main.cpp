@@ -19,6 +19,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+// For handlings log file and statistics
+#include <LogFileReader.h>
+
 // Web Servers Host Settings
 #define PORT 80
 #define HOST_IP "127.0.0.1"
@@ -115,7 +118,10 @@ int main(void){
 
      // Check if a day have been passed
      if(difftime(TimeStamp,TimeStamp0) >= DAY_IN_SECONDS){
-	
+
+	// Calculate statistics files
+        if(WriteStatisticFile(FullPathToFile)!=0) return -1;
+
         // Update the path to a new log-file
 	sprintf(FullPathToFile, "%s/%s_%ld.csv",PATH_TO_EXT_DISK,filename,TimeStamp);
 	

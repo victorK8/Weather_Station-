@@ -162,34 +162,18 @@ def GetHistoData():
     else:
         return 404
 
-    # Check FirstDate args
-    if 'FirstDate' in request.args:
-        first_date = request.args['Measure']
-        pass
-    else:
-        return 404
-
-    # Check DateEnd args
-    if 'LastDate' in request.args:
-        last_date = request.args['Measure']
-        pass
-    else:
-        return 404
-    
     # Check first time args
-    if 'FirstTime' in request.args:
-        first_t = request.args['Measure']
+    if 'FirstDate' in request.args:
+        first_t = request.args['FirstDate']
         pass
     else:
-        first_t = '00-00-00'
         return 404
 
     # Check last time args
-    if 'LastTime' in request.args:
-        last_t = request.args['Measure']
+    if 'LastDate' in request.args:
+        last_t = request.args['LastDate']
         pass
     else:
-        last_t = '00-00-00'
         return 404
 
 
@@ -199,8 +183,8 @@ def GetHistoData():
     ListOfFilesInGoogleDrive = []
 
     # 2. Conversion init and end dates(in format 'dd-mm-yyyy hh-mm-ss') to timestamp format
-    InitDateAsTimestamp = time.mktime(datetime.datetime.strptime(first_date + ' ' + first_t,'%d-%m-%Y %HH-%MM-%SS').timetuple())
-    LastDateAsTimestamp = time.mktime(datetime.datetime.strptime(last_date + ' ' + last_t,'%d-%m-%Y %HH-%MM-%SS').timetuple())
+    #InitDateAsTimestamp = time.mktime(datetime.datetime.strptime(first_date + ' ' + first_t,'%d-%m-%Y %HH-%MM-%SS').timetuple())
+    #LastDateAsTimestamp = time.mktime(datetime.datetime.strptime(last_date + ' ' + last_t,'%d-%m-%Y %HH-%MM-%SS').timetuple())
 
 
     # Based on measure id return 
@@ -220,7 +204,7 @@ def GetHistoData():
 
 
 # Url for upload current data as csv format by IoT device
-@WebServer.route('/CurrentData/<CSVObject>')
+@WebServer.route('/CurrentData/<CSVObject>', methods=['POST'])
 def UploadCurrentData(CSVObject):
 
     global CurrentData 
