@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+  <!-- Title of web -->
+  <title> Weather Station </title>
+
+  <!-- Add jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+  <!-- Ad chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+  <!-- Add d3.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+
+  <!-- CSS script to set style -->
+  <style>
+
+    #TextStyle {
+        position: relative;
+        text-align: center;
+        text-transform: lowercase;
+        font-size: 30px;
+        margin-top: 80px;
+        color: black;
+    }
+
+    body {margin:0;}
+
+    ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    }
+
+    li {
+    float: left;
+    }
+
+    li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    }
+
+    li a:hover:not(.active) {
+    background-color: #111;
+    }
+
+    .active {
+    background-color: #4CAF50;
+    }
+
+  /* Style dash div */
+  .dash {
+    float: left;
+    background-color: #f1f1f1;
+    width: 100%;
+    height: 100%;
+  }
+  /* Style the tab */
+  .tab {
+    float: left;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    width: 15%;
+    height: 25%;
+  }
+
+  /* Style the buttons that are used to open the tab content */
+  .tab button {
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 22px 16px;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    background-color: #ddd;
+  }
+
+  /* Create an active/current "tab button" class */
+  .tab button.active {
+    background-color: rgb(61, 56, 56);
+  }
+
+  /* Header Style */
+  .HeaderStyle{
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 10px 10px;
+    text-align: center;
+    font-size : 50px;
+  }
+
+  /* Style for canvas*/
+  .canvas-container{
+     display: inline-block;
+     width:50%;
+     height:40%;
+  }
+
+
+  </style>
+
+</head>
+
+
+
+<body>
+    <!-- Nav. Menu -->
+    <div>
+      <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="/downloads.html">Downloads</a></li>
+          <li><a href="/location.html">Location</a></li>
+          <li><a href="/music.html">Music</a></li>
+          <li><a href="/about.html">About</a></li>
+
+      </ul>
+    </div>
+
+    <!-- spaces -->
+    <br></br>
+
+    <!-- dahsboard header  -->
+    <div id='dashboard' class='dash'>
+
+      <!-- tabs div -->
+      <div id='tabs' class="tab">
+        <button id="main">Main</button>
+        <button id="historical">Historical</button>
+        <button id="analysis">Analysis</button>
+      </div>
+
+      <!-- Header -->
+      <div>
+        <h1 class="HeaderStyle"> Weather Station Data </h1>
+      </div>
+
+    </div>
+
+    <!-- spaces -->
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+
+    <!-- UI for user -->
+    <div id="upper-viz">
+      <!-- Buttons -->
+      <!-- Calendar input -->
+      <label for="DateSelector"> Select date to inspect: </label>
+      <input type="date" id="DateSelector" name="trip-start" value="2020-06-17" min="2020-06-01" max="2020-06-30">
+    </div>
+
+    <!-- Chart -->
+    <div id="lower-viz">
+      <!--header-->
+      <h1> <center> Analysis <center> </h1>
+      <br></br>
+      <!-- Canvas for charts -->
+      <canvas id="bar-chart" class='canvas-container' ></canvas>
+      <br></br>
+      <br></br>
+      <canvas id="scatter-chart" class='canvas-container' ></canvas>
+
+    </div>
+
+
+    <!-- javascript -->
+    <script>
+
+      /*  -------------    Functions ------------   */
+
+      // Http request function
+      function httpGet(theUrl){
+          var xmlHttp = new XMLHttpRequest();
+          xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+          xmlHttp.send( null );
+          return xmlHttp.responseText;
+      }
+
+      // Get data of buffer as array of json objects
+      function GetDataFromBuffer(buffer){
+
+        ArrayOfJSObjects = [];
+
+        for(var i=0; i<buffer.length; i++){
+          ArrayOfJSObjects.push(JSON.parse(buffer.getItem(buffer.key(i))));
+        }
+
+        return ArrayOfJSObjects;
+      }
+
+
+      /* ----------------- app code ----------------- */
+
+      // Summary data of a full day
+      var ExampleDataOfAnalysisFile = {
+        "LineTimestamp":1591688842,
+        "Temperature":{"Average": 23.477507, "Deviation": 0.548382, "Max": 24.000000, "MaxStamp": 1591666736, "Min": 23.000000, "MinStamp": 1591688842, "Median": 24.000000},
+         "Humidity": :{"Average": 45.866803, "Deviation": 1.168333, "Max": 81.000000, "MaxStamp": 1591652221, "Min": 44.000000, "MinStamp": 1591652321,"Median": 1.168333}
+       };
+
+       // Days of current month
+       var DaysOfMonth = 30;
+
+      /* Bar Chart */
+      var CanvasOfBarChart = document.getElementById('bar-chart').getContext('2d');
+      var BarChart = new Chart(CanvasOfBarChart, {
+          type: 'bar',
+          data: {
+              labels: ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Oct.', 'Sep.', 'Nov.', 'Dec.'],
+              datasets: [{
+                  label: '# of Votes',
+                  data: [12, 19, 3, 5, 2, 3],
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true
+                      }
+                  }]
+              }
+          }
+      });
+
+      /* Scatter Chart */
+      var CanvasOfScatterChart = document.getElementById('scatter-chart').getContext('2d');
+      var ScatterChart = new Chart(CanvasOfScatterChart, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Scatter Dataset',
+                data: [{
+                    x: -10,
+                    y: 0
+                }, {
+                    x: 0,
+                    y: 10
+                }, {
+                    x: 10,
+                    y: 5
+                }]
+            }]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    type: 'linear',
+                    position: 'bottom'
+                }]
+            }
+        }
+    });
+      /* Handle button's click events*/
+      $('#main').click(function(){
+        // Log
+        console.log("Main");
+
+        // Change location
+        //location.href = "";
+      });
+
+      $('#historical').click(function(){
+        // Log
+        console.log("Historical");
+
+        // Change location
+        //location.href = "";
+      });
+
+
+      $('#analysis').click(function(){
+        // Log
+        console.log("Analysis");
+
+        // Change location
+        //location.href = "";
+      });
+
+
+
+    </script>
+
+
+</html>
