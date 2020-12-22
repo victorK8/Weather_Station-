@@ -43,13 +43,6 @@
 
 
 <body id = "BackgroundStyle">
-    <!-- Text -->
-    <div>
-      <br></br>
-      <br></br>
-      <br></br>
-      <h1> Music are in progress </h1>
-    </div>
 
     <!-- Index Menu -->
     <!-- Note: We use href="#" for test links. In a real web site this would be URLs. -->
@@ -94,9 +87,13 @@
 
 
 
+
     <!--js script -->
     <script>
+        // Alarm for showing that it's in progress
+        alert("Sorry! This services are in progress.");
 
+        // Spotify -->
         window.onSpotifyWebPlaybackSDKReady = () => {
           const token = '[My Spotify Web API access token]';
           const player = new Spotify.Player({
