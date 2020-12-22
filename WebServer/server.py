@@ -20,29 +20,29 @@ else:
 
 
 # Google Drive Account
-UserName = gp.getuser()
-login = GoogleAuth()
+#UserName = gp.getuser()
+#login = GoogleAuth()
 
-if UserName == 'root':
+#if UserName == 'root':
 
-    # If run server with my own pc 
-    # login.LoadCredentialsFile("home/maluma/Escritorio/Projects/Weather_Station-/mycreds.txt")
+#    # If run server with my own pc
+#    # login.LoadCredentialsFile("home/maluma/Escritorio/Projects/Weather_Station-/mycreds.txt")
 
-    # If run server with raspberry pi 
-    login.LoadCredentialsFile("/home/raspi-of-malum/Desktop/Weather_Station-/mycreds.txt") 
+#    # If run server with raspberry pi
+#    login.LoadCredentialsFile("/home/raspi-of-malum/Desktop/Weather_Station-/mycreds.txt")
 
-else:
-    # No run with another user or device
-    print("Not allow")
-    exit(-1)
+#else:
+#    # No run with another user or device
+#    print("Not allow")
+#    exit(-1)
 
 # Google Drive User
-DriveUser = GoogleDrive(login)
+#DriveUser = GoogleDrive(login)
 
 
 #### Global Variables ####
 
-# Current data 
+# Current data
 CurrentData = {"Timestamp":2,"Date":"21/03/2020 10:10:10","Temperature": 30, "Humidity": 55}
 
 # Data path (Change to 'home/pi/Desktop/LogFiles')
@@ -54,6 +54,15 @@ WebServer = Flask(__name__)
 
 
 # -------------------- WEB BACKEND ----------------- #
+
+# Show current status
+@WebServer.route('/Status')
+def status():
+
+    # get data
+    global CurrentData
+
+    return jsonify(CurrentData)
 
 # Index page
 @WebServer.route('/')
@@ -71,7 +80,7 @@ def index():
     except:
         DateString = '-- / -- / --'
         TemperatureString = 'Temperature : -- [ºC]'
-        HumidityString = 'Humidity : -- [%]' 
+        HumidityString = 'Humidity : -- [%]'
 
 
     return render_template('index.html', date = DateString, temperature = TemperatureString, humidity = HumidityString)
@@ -103,17 +112,17 @@ def location():
        return render_template('location.html')
 
 
-# --------------------- API -------------------------- # 
+# --------------------- API -------------------------- #
 
 ### Current Data
 
 # Url for get current measure
 @WebServer.route('/Data/Current/All', methods=['GET'])
-def GetAllCurrentData():    
+def GetAllCurrentData():
 
     global CurrentData
     print(CurrentData)
-    return json.dumps(CurrentData) 
+    return json.dumps(CurrentData)
 
 
 # Url for get current measure
@@ -139,9 +148,9 @@ def GetCurrentData():
     elif measure == 'Date':
         ReturnedString = CurrentData['Date']
     elif measure == 'All':
-        ReturnedString = json.dumps(CurrentData) 
+        ReturnedString = json.dumps(CurrentData)
     else:
-        ReturnedString = '' 
+        ReturnedString = ''
 
     return ReturnedString
 
@@ -187,7 +196,7 @@ def GetHistoData():
     #LastDateAsTimestamp = time.mktime(datetime.datetime.strptime(last_date + ' ' + last_t,'%d-%m-%Y %HH-%MM-%SS').timetuple())
 
 
-    # Based on measure id return 
+    # Based on measure id return
     if measure == 'All':
         return 'Not-Yet'
     elif measure == 'Temperature':
@@ -207,7 +216,7 @@ def GetHistoData():
 @WebServer.route('/CurrentData/<CSVObject>', methods=['POST'])
 def UploadCurrentData(CSVObject):
 
-    global CurrentData 
+    global CurrentData
 
     # CSVObject: temp_value, hum_value, timestamp, date
     ListOfSplittedStrings = CSVObject.split(',')
@@ -215,13 +224,13 @@ def UploadCurrentData(CSVObject):
 
     DateAsDatetime = datetime.datetime.fromtimestamp(float(ListOfSplittedStrings[2]))
 
-    # Upload Current Data Variable   
+    # Upload Current Data Variable
     CurrentData['Temperature'] = float(ListOfSplittedStrings[0])
     CurrentData['Humidity'] = float(ListOfSplittedStrings[1])
     CurrentData['Timestamp'] = float(ListOfSplittedStrings[2])
     CurrentData['Date'] = DateAsDatetime.strftime("%d/%m/%Y, %H:%M:%S")
 
-    return 'ok' 
+    return 'ok'
 
 
 # Url for download a log file by name (Some changes here)
@@ -242,5 +251,3 @@ def UploadFileToBrowser(filename):
 # Run tha server
 if __name__ == '__main__':
     WebServer.run(host = '0.0.0.0', port=PORT, debug=True)
-
-

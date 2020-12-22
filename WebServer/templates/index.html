@@ -6,6 +6,14 @@
   <!-- Title of web -->
   <title> Weather Station </title>
 
+  <!-- Add favicon -->
+  <link rel="icon" type="image/png" href="static/cloud.png">
+
+  <!-- Add bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+
   <!-- Add jquery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -15,105 +23,176 @@
     #BackgroundStyle{
         background-image: url({{ url_for('static', filename='background_pic.jpg') }});
         background-repeat: no-repeat;
-        background-size: cover;    
+        background-size: cover;
         }
 
-    #TextStyle {
-        position: relative;
-        text-align: center;
-        text-transform: uppercase;
-        font-size: 80px;
-        margin-top: 80px;
-        font-family:"Times New Roman";
-        color: black;
-    }
-
-    #TextStyle2 {
-        position: relative;
-        text-align: center;
-        text-transform: uppercase;
-        font-size: 60px;
-        margin-top: 100px;
-        margin-left: 80px;
-        font-family:"Arial";
-        color: black;
-    }
     body {margin:0;}
 
-    ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    }
-
-    li {
-    float: left;
-    }
-
-    li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    }
-
-    li a:hover:not(.active) {
-    background-color: #111;
-    }
-
-    .active {
-    background-color: #4CAF50;
-    }
 
   </style>
 
 </head>
 
 
-
 <body id = "BackgroundStyle">
-    <!-- Text -->
-    <h1 id = TextStyle> Weather Station </h1>
-
-    <!-- Current Measures -->
-    <div><h1 id = TextSyle2> <center> {{ date }} </center></h2></div>
-    <div><h1 id = TextSyle2> <center> {{ temperature }} </center></h2></div>
-    <div><h1 id = TextSyle2> <center> {{ humidity }} </center></h2></div>
-
 
     <!-- Index Menu -->
     <!-- Note: We use href="#" for test links. In a real web site this would be URLs. -->
-    <ul>
-            <li><a href="">Home</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="/downloads.html">Downloads</a></li>
-            <li><a href="location.html">Location</a></li>
-            <li><a href="music.html">Music</a></li>
-            <li><a href="about.html">About</a></li>
-    </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+      <!-- Navbar items -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <!-- home -->
+          <li class="nav-item active">
+            <a class="nav-link" href="">Home</a>
+          </li>
+
+          <!-- dash -->
+          <li class="nav-item active">
+            <a class="nav-link" href="/dashboard.html">Dashboard</a>
+          </li>
+
+          <!-- downloads -->
+          <li class="nav-item active">
+            <a class="nav-link" href="/downloads.html">Downloads</a>
+          </li>
+
+          <!-- location -->
+          <li class="nav-item active">
+            <a class="nav-link" href="/location.html">Location</a>
+          </li>
+
+          <!-- music -->
+          <li class="nav-item active">
+            <a class="nav-link" href="/music.html">Music</a>
+          </li>
+
+          <!-- about -->
+          <li class="nav-item active">
+            <a class="nav-link" href="/about.html">About</a>
+          </li>
+
+        </ul>
+      </div>
+    </nav>
+
+
+    <!-- Text -->
+    <div class="container">
+
+      <!-- Title of page -->
+      <div class="row mt-5 mb-5">
+        <div class="col"></div>
+
+        <div class="col">
+          <h1 > Weather Station </h1>
+        </div>
+
+        <div class="col"></div>
+
+      </div>
+
+      <!-- Current Measures. Date, Temp. and Hum. -->
+      <div class="row mt-5 mb-5">
+
+        <!-- Calendar -->
+        <div class="col">
+          <center>
+            <!-- icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+              <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+            </svg>
+            <!-- text -->
+            <h2 id ="date"> date </h2>
+          </center>
+        </div>
+
+        <!-- clock -->
+        <div class="col">
+          <center>
+            <!-- icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-watch" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M4 14.333v-1.86A5.985 5.985 0 0 1 2 8c0-1.777.772-3.374 2-4.472V1.667C4 .747 4.746 0 5.667 0h4.666C11.253 0 12 .746 12 1.667v1.86A5.985 5.985 0 0 1 14 8a5.985 5.985 0 0 1-2 4.472v1.861c0 .92-.746 1.667-1.667 1.667H5.667C4.747 16 4 15.254 4 14.333zM13 8A5 5 0 1 0 3 8a5 5 0 0 0 10 0z"/>
+              <path d="M13.918 8.993A.502.502 0 0 0 14.5 8.5v-1a.5.5 0 0 0-.582-.493 6.044 6.044 0 0 1 0 1.986z"/>
+              <path fill-rule="evenodd" d="M8 4.5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5H6a.5.5 0 0 1 0-1h1.5V5a.5.5 0 0 1 .5-.5z"/>
+            </svg>
+            <!-- text -->
+            <h2 id ="time"> date </h2>
+          </center>
+        </div>
+
+        <!-- Temperature -->
+        <div class="col">
+          <center>
+            <!-- icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-thermometer" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M6 2a2 2 0 1 1 4 0v7.627a3.5 3.5 0 1 1-4 0V2zm2-1a1 1 0 0 0-1 1v7.901a.5.5 0 0 1-.25.433A2.499 2.499 0 0 0 8 15a2.5 2.5 0 0 0 1.25-4.666.5.5 0 0 1-.25-.433V2a1 1 0 0 0-1-1z"/>
+              <path d="M9.5 12.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+            </svg>
+            <!-- text -->
+            <h2 id ="temp"> temperature </h2>
+          </center>
+        </div>
+
+        <!-- Humidity -->
+        <div class="col">
+          <center>
+          <!-- icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-droplet" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0c.109.363.234.708.371 1.038.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8zm.413 1.021A31.25 31.25 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
+            <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448z"/>
+          </svg>
+          <!-- text -->
+          <h2 id ="hum"> humidity </h2>
+          </center>
+        </div>
+
+      </div>
+
+    </div>
 
     <!-- Refresh web page with ajax -->
     <script>
       /***** Refresh function ******/
       function IndexRefresh(){
-        // Refresh 
-        location.reload();
+        // Get server status
+        $.get('/Status', function(data){
+          // Log data's status
+          console.log(data);
+
+          // Get timestamp
+          var today = new Date();
+
+          // From stamp get dd/mm/yyyy
+          var dd = String(today.getDate()).padStart(2,'0');
+          var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+          var yyyy = today.getFullYear();
+          var date = dd + "/" + mm + "/" + yyyy;
+          // From stamp get hh:mm:ss
+          var hh = today.getHours();
+          var mm_t = today.getMinutes() ;
+          var ss = today.getSeconds();
+          var time = hh + ":" + mm_t ;//+ ":" + ss;
+
+          // Change user ui
+          document.getElementById("date").innerText = date;
+          document.getElementById("time").innerText = time;
+          document.getElementById("temp").innerText = data.Temperature + " ºC";
+          document.getElementById("hum").innerText = data.Humidity + " %";
+        });
         // Log it
         console.log(" Index reloaded \n");
       }
 
-      // Execute refresh function each 4 seconds
-      const RefreshTimeInMiliseconds = 4000;
-      setInterval(IndexRefresh, RefreshTimeInMiliseconds);     
+      // Execute refresh function each minute
+      const RefreshTimeInMiliseconds = 60*1000;
+      IndexRefresh();
+      setInterval(IndexRefresh, RefreshTimeInMiliseconds);
 
     </script>
-              
+
 </body>
 
 </html>
