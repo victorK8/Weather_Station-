@@ -26,84 +26,23 @@
   <!-- CSS script to set style -->
   <style>
 
-    #TextStyle {
-        position: relative;
-        text-align: center;
-        text-transform: lowercase;
-        font-size: 30px;
-        margin-top: 80px;
-        color: black;
-    }
-    body {margin:0;}
+  #BackgroundStyle{
+      background-image: url({{ url_for('static', filename='background_pic.jpg') }});
+      background-repeat: no-repeat;
+      background-size: cover;
+      }
 
 
-  /* Style dash div */
-  .dash {
-    float: left;
-    background-color: #f1f1f1;
-    width: 100%;
-    height: 100%;
-  }
-  /* Style the tab */
-  .tab {
-    float: left;
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
-    width: 15%;
-    height: 25%;
-  }
-
-  /* Style the buttons that are used to open the tab content */
-  .tab button {
-    display: block;
-    background-color: inherit;
-    color: black;
-    padding: 22px 16px;
-    width: 100%;
-    border: none;
-    outline: none;
-    text-align: left;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-
-  /* Change background color of buttons on hover */
-  .tab button:hover {
-    background-color: #ddd;
-  }
-
-  /* Create an active/current "tab button" class */
-  .tab button.active {
-    background-color: rgb(61, 56, 56);
-  }
-
-  /* Header Style */
-  .HeaderStyle{
-    display: block;
-    background-color: inherit;
-    color: black;
-    padding: 10px 10px;
-    text-align: center;
-    font-size : 50px;
-  }
-
-  /* Style for charts*/
+  /* Add style for charts*/
   .canvas-container{
-     display: inline-block;
-     width:50%;
-     height:40%;
-
+     width:18%;
+     height:80%;
   }
-
-
   </style>
 
 </head>
 
-
-
-<body>
-
+<body id ="BackgroundStyle">
 
   <!-- Index Menu -->
   <!-- Note: We use href="#" for test links. In a real web site this would be URLs. -->
@@ -146,56 +85,49 @@
     </div>
   </nav>
 
+  <!-- Buttons and charts -->
+  <div class="container">
 
-    <!-- spaces -->
-    <br></br>
+    <!--  Ui -->
+    <div class="row mt-2 mb-2">
 
-    <!-- dahsboard header  -->
-    <div id='dashboard' class='dash'>
+      <!-- Tabs -->
+      <ul id="tabs" class="nav nav-tabs" role="tablist">
+        <!-- main -->
+        <li class="nav-item" role="tab">
+          <a class="nav-link active" id="main" href="">Main</a>
+        </li>
 
-      <!-- tabs div -->
-      <div id='tabs' class="tab">
-        <button id="main">Main</button>
-        <button id="historical">Historical</button>
-        <button id="analysis">Analysis</button>
-      </div>
+        <!-- Historical
+        <li class="nav-item" role="tab">
+          <a class="nav-link" id="historical" href="">Historical</a>
+        </li> -->
 
-      <!-- Header -->
-      <div>
-        <h1 class="HeaderStyle"> Weather Station Data </h1>
-      </div>
+        <!-- Analysis
+        <li class="nav-item" role="tab">
+          <a class="nav-link" id="analysis" href="">Analysis</a>
+        </li> -->
 
+      </ul>
     </div>
 
-    <!-- spaces -->
-    <br></br>
-    <br></br>
-    <br></br>
-    <br></br>
-    <br></br>
-    <br></br>
+    <!-- Chart 1-->
+    <div id="datavix-line" class="row mb-2 bg-white">
+        <!-- Canvas for charts -->
+        <h3> <center> Real-Time Data </center> </h3>
+        <canvas id='line-chart' class="canvas-container"></canvas>
+    </div>
 
-    <!-- Chart -->
-    <div id="datavix-line">
+    <!-- Chart 2 -->
+    <div id="datavix-bar" class="row mb-2 bg-light">
       <!-- Canvas for charts -->
-      <h1> <center> Real-Time Data </center> </h1>
-      <canvas id='line-chart' class="canvas-container"></canvas>
+      <h3> <center> Real-Time Statistics </center> </h3>
+      <canvas id='bar-chart' class="canvas-container"></canvas>
     </div>
-
-    <br></br>
-    <br></br>
-
-    <!-- Chart -->
-    <div id="datavix-bar">
-    <!-- Canvas for charts -->
-    <h1> <center> Real-Time Statistics </center> </h1>
-    <canvas id='bar-chart' class="canvas-container"></canvas>
-    </div>
-
-
 
     <!-- javascript -->
     <script>
+
 
       /*  -------------    Functions ------------   */
 
@@ -221,75 +153,15 @@
 
       /*  -------------    Vars    ------------    */
 
-
       // MAX BUFFER STORAGE LENGTH
       var MAX_BUFFER_LENGTH = 30;
 
-      /*  -------------    App Code  ------------    */
+      // Chart setup variable
+      var CHART_SETUP = "Main";
 
-      var ctx_line = document.getElementById('line-chart').getContext('2d');
+      // Var for periodical refresh
+      var Refresh = "";
 
-      // Add chart data and option settings
-      line_data=  {
-          labels: [],
-          datasets:  [
-
-          {label: 'Temperature [ºC]', borderColor: 'red', data: []},
-          {label: 'Humidity [%]', borderColor: 'blue', data: []}
-
-          ]
-      };
-
-      line_options =  {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero:true
-                  }
-              }]
-          }
-      };
-
-      // Put line-chart
-      var line_chart = new Chart(ctx_line, {
-          type: 'line',
-          data: line_data,
-          options: line_options
-      });
-
-    var ctx_bar = document.getElementById('bar-chart').getContext('2d');
-
-    // Add chart data and option settings
-    bar_data=  {
-        labels: ['Avg.Temperature[ºC]','Median Temperature[ºC]','Std.Temperature[ºC]','Avg.Humidity[%]','Median Humidity[%]','Std.Humidity[%]'],
-        datasets: [{
-          label: 'Statistics',
-          backgroundColor: 'red',
-          barPercentage: 0.5,
-          barThickness: 10,
-          data: []
-        }]
-    };
-
-    bar_options =  {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
-            }]
-        }
-    };
-
-      var bar_chart = new Chart(ctx_bar, {
-          type: 'horizontalBar',
-          data: bar_data,
-          options: bar_options
-      });
 
       /* --- Dynamic chart handler functions ---*/
 
@@ -342,13 +214,11 @@
       // Refresh function every 2 seconds
       function PeriodicalRefresh(){
 
-
           // Request based on idDevice
           var request_uri = '/Data/Current/All';
 
           // GET request
           var req = $.get(request_uri,function(data,status){
-
               // Log
               console.log(data);
 
@@ -356,7 +226,7 @@
               var arrivedData = JSON.parse(data);
 
               // Put timestamp as string date
-              var time_as_date = new Date(arrivedData.Timestamp*1000);
+              var time_as_date = new Date();
               var time_to_labeling =  time_as_date.getHours() + ":" + time_as_date.getMinutes() + ":" + time_as_date.getSeconds();
 
               // Calculate statistics
@@ -383,24 +253,74 @@
 
       }
 
+
+        var ctx_line = document.getElementById('line-chart').getContext('2d');
+
+        // Add chart data and option settings
+        line_data=  {
+            labels: [],
+            datasets:  [
+
+            {label: 'Temperature [ºC]', borderColor: 'red', data: []},
+            {label: 'Humidity [%]', borderColor: 'blue', data: []}
+
+            ]
+        };
+
+        line_options =  {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        };
+
+        // Put line-chart
+        var line_chart = new Chart(ctx_line, {
+            type: 'line',
+            data: line_data,
+            options: line_options
+        });
+
+      var ctx_bar = document.getElementById('bar-chart').getContext('2d');
+
+      // Add chart data and option settings
+      bar_data=  {
+          labels: ['Avg.Temperature[ºC]','Median Temperature[ºC]','Std.Temperature[ºC]','Avg.Humidity[%]','Median Humidity[%]','Std.Humidity[%]'],
+          datasets: [{
+            label: 'Statistics',
+            backgroundColor: 'red',
+            barPercentage: 0.5,
+            barThickness: 10,
+            data: []
+          }]
+      };
+
+      bar_options =  {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero:true
+                  }
+              }]
+          }
+      };
+
+        var bar_chart = new Chart(ctx_bar, {
+            type: 'horizontalBar',
+            data: bar_data,
+            options: bar_options
+        });
+
       // Run every 2 seconds
-      var periodicRefresh = setInterval(PeriodicalRefresh, 2000);
-
-
-      /* Handle button's click events*/
-
-      $('#main').click(function(){
-
-      });
-
-      $('#historical').click(function(){
-      });
-
-
-      $('#analysis').click(function(){
-      });
-
-
+      PeriodicalRefresh();
+      Refresh = setInterval(PeriodicalRefresh, 2000);
 
     </script>
 
