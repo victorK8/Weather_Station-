@@ -25,14 +25,6 @@
 
   <!-- CSS script to set style -->
   <style>
-
-  #BackgroundStyle{
-      background-image: url({{ url_for('static', filename='background_pic.jpg') }});
-      background-repeat: no-repeat;
-      background-size: cover;
-      }
-
-
   /* Add style for charts*/
   .canvas-container{
      width:18%;
@@ -42,7 +34,7 @@
 
 </head>
 
-<body id ="BackgroundStyle">
+<body>
 
   <!-- Index Menu -->
   <!-- Note: We use href="#" for test links. In a real web site this would be URLs. -->
@@ -112,7 +104,7 @@
     </div>
 
     <!-- Chart 1-->
-    <div id="datavix-line" class="row mb-2 bg-white">
+    <div id="datavix-line" class="row mb-2 bg-light">
         <!-- Canvas for charts -->
         <h3> <center> Real-Time Data </center> </h3>
         <canvas id='line-chart' class="canvas-container"></canvas>
@@ -261,8 +253,8 @@
             labels: [],
             datasets:  [
 
-            {label: 'Temperature [ºC]', borderColor: 'red', data: []},
-            {label: 'Humidity [%]', borderColor: 'blue', data: []}
+            {label: 'Temperature [ºC]', borderColor: '#A82F4A', data: []},
+            {label: 'Humidity [%]', borderColor: '#2F66A8', data: []}
 
             ]
         };
@@ -293,7 +285,7 @@
           labels: ['Avg.Temperature[ºC]','Median Temperature[ºC]','Std.Temperature[ºC]','Avg.Humidity[%]','Median Humidity[%]','Std.Humidity[%]'],
           datasets: [{
             label: 'Statistics',
-            backgroundColor: 'red',
+            backgroundColor: '#2FA873',
             barPercentage: 0.5,
             barThickness: 10,
             data: []
